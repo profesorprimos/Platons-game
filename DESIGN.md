@@ -6,6 +6,8 @@ This file holds everything we have decided about the game. We add to it every ti
 
 School is too boring, so you escape. The game is **funny**, not scary.
 
+**The goal:** it is the end of term, and the whole school has to go to a super boring assembly. You must escape **before the assembly starts**.
+
 - **Type:** role-playing game (RPG)
 - **Look:** 2D pixel art, or paper cut-out characters like the *Paper Mario* games
 - **Plays in:** a web browser
@@ -14,12 +16,18 @@ School is too boring, so you escape. The game is **funny**, not scary.
 
 ## Characters
 
-At the start you pick one character from a few different types.
-*(To decide: which types, and what makes each one different.)*
+At the start you pick one character. Each one is good at something different.
 
-## The seven locations
+| Character | Good at |
+|-----------|---------|
+| The sporty one | *(idea: moves faster)* |
+| The clever one | *(idea: learns secrets more easily)* |
+| The funny one | *(to decide)* |
+| The quiet one | *(idea: teachers notice them less)* |
 
-The locations follow the order of a school day. Some places come back more than once.
+## The locations
+
+The locations follow the order of a school day. The classroom comes back more than once.
 
 | # | Location | Who is there |
 |---|----------|--------------|
@@ -29,9 +37,9 @@ The locations follow the order of a school day. Some places come back more than 
 | 4 | Classroom (2nd lesson) | Teacher |
 | 5 | Canteen at lunch | *(to decide)* |
 | 6 | Classroom (3rd lesson) | Teacher |
-| 7 | Principal's office | Principal |
+| 7 | *(to decide: the place where you finally escape)* | |
 
-*(This order is a first guess. Please check it.)*
+We took out the principal's office. The game is simpler without it.
 
 ## How you play
 
@@ -41,26 +49,48 @@ The locations follow the order of a school day. Some places come back more than 
 - **Sneak past teachers** without them seeing you.
 - **No fighting.** You never fight anyone. You just get away.
 
+## Sneaking
+
+Sneaking is about **being quiet** and **not getting the teacher's attention**.
+
+The best time to move is when the teacher is busy. For example, when they are:
+
+- using their computer
+- turned around, writing on the board
+
 ## Getting caught
 
-If a teacher catches you:
+There is **no game over**. If a teacher catches you:
 
 1. You **lose items**.
-2. The teachers become **more careful**, so sneaking gets harder.
+2. The teachers become **more alert**. They **look at you more often**, so sneaking gets harder.
 
-## Items and secrets
+## Items
 
-Items and secrets help you escape. Some items are normal school things. Some are funny things you would not expect to find at school.
+Items help you escape. Some are normal school things. Some are funny things you would not expect to find at school.
 
 | Item | What it does |
 |------|--------------|
 | Helicopter hat | A hat with a helicopter rotor. It lets you fly. |
-| *(more to come)* | |
+| Ladder | *(to decide)* |
+| Hall pass | *(to decide)* |
+| Scissors | *(to decide)* |
+| Machete | *(to decide)* |
+| Special quiet shoes | Walk without making noise. |
+
+## Secrets
+
+Teachers have **habits**, and the habits change on **different days**. If you learn a habit, you know the best time to sneak.
+
+Examples:
+
+- A teacher drinks coffee at a certain time.
+- A teacher opens the window if something happens.
 
 ## Still to decide
 
-- The character types
-- How you finally escape, and where you go
-- What secrets people can tell you
-- More items (normal ones and funny ones)
-- How teachers see you (line of sight? noise?)
+- The 7th location, where you finally escape
+- Whether the game lasts one day or many days
+- What each item does
+- Who is at break time and in the canteen
+- What the funny character is good at
