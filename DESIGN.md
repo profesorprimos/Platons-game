@@ -6,7 +6,9 @@ This file holds everything we have decided about the game. We add to it every ti
 
 School is too boring, so you escape. The game is **funny**, not scary.
 
-**The goal:** it is the end of term, and the whole school has to go to a super boring assembly. You must escape **before the assembly starts**.
+**The goal:** it is the end of term, and the whole school has to go to a super boring assembly. You must escape **before the assembly starts**. Your bike is waiting in the car park, so you need to get there and ride away.
+
+**Time:** there are **10 school days** until the assembly.
 
 - **Type:** role-playing game (RPG)
 - **Look:** 2D pixel art, or paper cut-out characters like the *Paper Mario* games
@@ -33,11 +35,11 @@ The locations follow the order of a school day. The classroom comes back more th
 |---|----------|--------------|
 | 1 | School bus | Bus driver |
 | 2 | Classroom (1st lesson) | Teacher |
-| 3 | Outside at break time | *(to decide)* |
+| 3 | Outside at break time | Teacher on duty |
 | 4 | Classroom (2nd lesson) | Teacher |
-| 5 | Canteen at lunch | *(to decide)* |
+| 5 | Canteen at lunch | Teacher on duty |
 | 6 | Classroom (3rd lesson) | Teacher |
-| 7 | *(to decide: the place where you finally escape)* | |
+| 7 | Car park, where your bike is | |
 
 We took out the principal's office. The game is simpler without it.
 
@@ -45,7 +47,7 @@ We took out the principal's office. The game is simpler without it.
 
 - **Collect items** that help you escape.
 - **Talk to people** to learn secrets.
-- **Swap items** with other students.
+- **Swap** items or sweets with other students.
 - **Sneak past teachers** without them seeing you.
 - **No fighting.** You never fight anyone. You just get away.
 
@@ -74,9 +76,10 @@ Items help you escape. Some are normal school things. Some are funny things you 
 | Helicopter hat | A hat with a helicopter rotor. It lets you fly. |
 | Ladder | *(to decide)* |
 | Hall pass | *(to decide)* |
-| Scissors | *(to decide)* |
-| Machete | *(to decide)* |
 | Special quiet shoes | Walk without making noise. |
+| Sweets | Swap them with other students for items. |
+
+Each item should solve a **particular problem** in the game. We took out the scissors and the machete. We will add new items when we know what problems each place has.
 
 ## Secrets
 
@@ -87,10 +90,10 @@ Examples:
 - A teacher drinks coffee at a certain time.
 - A teacher opens the window if something happens.
 
+The teachers on duty at break and lunch have habits too.
+
 ## Still to decide
 
-- The 7th location, where you finally escape
-- Whether the game lasts one day or many days
-- What each item does
-- Who is at break time and in the canteen
+- The problem in each place, and which item solves it
+- What the ladder and hall pass do
 - What the funny character is good at
