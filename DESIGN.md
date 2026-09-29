@@ -10,6 +10,8 @@ School is too boring, so you escape. The game is **funny**, not scary.
 
 **Time:** there are **10 school days** until the assembly.
 
+**How the days work:** every day you try to escape, going through the places in order. If a teacher catches you, the day ends and you start again the next morning on the bus. You **keep your items and secrets** from day to day, but teachers stay **more alert**. You win when you reach your bike, on any day before the assembly. If you have not escaped after day 10, you have to sit through the assembly.
+
 - **Type:** role-playing game (RPG)
 - **Look:** 2D pixel art, or paper cut-out characters like the *Paper Mario* games
 - **Plays in:** a web browser
@@ -22,10 +24,10 @@ At the start you pick one character. Each one is good at something different.
 
 | Character | Good at |
 |-----------|---------|
-| The sporty one | *(idea: moves faster)* |
-| The clever one | *(idea: learns secrets more easily)* |
-| The funny one | *(to decide)* |
-| The quiet one | *(idea: teachers notice them less)* |
+| The sporty one | Moves faster |
+| The clever one | Notices the teachers' habits |
+| The funny one | Tells a joke that distracts everybody |
+| The quiet one | Makes less noise |
 
 ## The locations
 
@@ -79,6 +81,18 @@ Items help you escape. Some are normal school things. Some are funny things you 
 | Special quiet shoes | Walk without making noise. |
 | Sweets | Swap them with other students for items. |
 
+### Problems and the items that solve them (first ideas)
+
+| Place | Problem | Item that helps |
+|---|---|---|
+| School bus | The driver watches you in the big mirror | Sunglasses |
+| Classroom 1 | The door squeaks | Special quiet shoes, or an oil can |
+| Break time | A tall fence | Ladder |
+| Classroom 2 | Teachers stop you in the corridor | Hall pass |
+| Canteen | The duty teacher guards the exit | Whoopee cushion |
+| Classroom 3 | The window is too high | Helicopter hat |
+| Car park | Your bike is locked | Bike key |
+
 Each item should solve a **particular problem** in the game. We took out the scissors and the machete. We will add new items when we know what problems each place has.
 
 ## Secrets
@@ -92,8 +106,28 @@ Examples:
 
 The teachers on duty at break and lunch have habits too.
 
+## Level 1: the school bus (built!)
+
+The bus driver took your **bike key** yesterday because you sang too loudly. The key hangs next to him at the front of the bus.
+
+- Sneak to the front, take the key, and be **sitting in a seat** when the bus arrives at school.
+- Sitting in a seat hides you. Standing in the aisle means the driver can see you in his **mirror**.
+- The driver checks his mirror again and again. Before he looks, a **?** appears. When he looks, a **!** appears and the aisle turns red.
+- **Noise:** walking makes a little noise, running makes a lot. Too much noise makes the driver look.
+- **Driver habits:** each weekday the driver does something that stops him looking in the mirror (singing, coffee, a giant sandwich). Students tell you these secrets. Secrets you know appear as green stripes on the bus bar.
+- **Students to talk to:** Maya, Leo, Zoe, Ben, Sam and Quinn. Some tell you secrets, some want to swap.
+- **Swaps:** 2 sweets → sunglasses (Leo), 1 sweet → helicopter hat (Zoe), sunglasses → quiet shoes (Quinn). Ben gives you a free sweet.
+
+### Character powers
+
+| Character | Power |
+|-----------|-------|
+| The Sporty One | Walks faster |
+| The Clever One | Sees the driver's habit for today on the bus bar, without being told |
+| The Funny One | Tells a joke once a day (press J). The driver laughs and stops watching for 6 seconds. |
+| The Quiet One | Makes half as much noise |
+
 ## Still to decide
 
 - The problem in each place, and which item solves it
 - What the ladder and hall pass do
-- What the funny character is good at

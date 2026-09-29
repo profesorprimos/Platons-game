@@ -1,0 +1,238 @@
+:root {
+  --bg: #1e2a3a;
+  --paper: #fdf6e3;
+  --ink: #2b2d42;
+  --line: #2b2d42;
+  --yellow: #ffc300;
+  --red: #e63946;
+  --green: #2a9d8f;
+  --amber: #f4a261;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ---------- top bar ---------- */
+.hud {
+  background: var(--paper);
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  display: grid;
+  gap: 6px;
+  box-shadow: 4px 4px 0 #0005;
+}
+.hud.dim { opacity: 0.45; }
+.hud-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.label { font-weight: 800; font-size: 14px; }
+.pill {
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 14px;
+  background: #fff;
+}
+.pill.danger { background: var(--red); color: #fff; }
+.pill.warn { background: #ffd166; }
+.pill.safe { background: #80ed99; }
+
+.bar {
+  position: relative;
+  flex: 1;
+  min-width: 120px;
+  height: 16px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+}
+.bar > div:first-child { height: 100%; background: var(--yellow); }
+.bar.noise { flex: 0 1 180px; }
+#noise-fill { background: #90be6d; transition: width 0.1s; }
+#noise-fill.loud { background: var(--red); }
+#ride-marks { position: absolute; inset: 0; }
+.mark {
+  position: absolute; top: 0; bottom: 0;
+  background: repeating-linear-gradient(45deg, #80ed99aa 0 6px, #2a9d8faa 6px 12px);
+}
+.bar .end { position: absolute; right: 2px; top: -3px; font-size: 14px; }
+.alert { font-size: 16px; letter-spacing: 2px; color: var(--red); }
+
+/* ---------- game picture ---------- */
+.stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 4px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 6px 6px 0 #0005;
+  background: #7ec850;
+}
+#world {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
+.hidden { display: none !important; }
+
+.hint {
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+  background: #000a; color: #fff;
+  padding: 4px 12px; border-radius: 999px;
+  font-size: clamp(12px, 1.6vw, 16px);
+  pointer-events: none;
+}
+.hint:empty { display: none; }
+
+.banner {
+  position: absolute; left: 50%; top: 8px; transform: translateX(-50%);
+  max-width: 90%;
+  background: var(--paper);
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: clamp(13px, 1.8vw, 18px);
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 3px 3px 0 #0006;
+}
+
+.dialog {
+  position: absolute; left: 3%; right: 3%; bottom: 4%;
+  background: var(--paper);
+  border: 4px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: clamp(14px, 2.1vw, 22px);
+  box-shadow: 4px 4px 0 #0006;
+  cursor: pointer;
+}
+.dialog .who {
+  display: inline-block;
+  background: var(--yellow);
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  padding: 0 8px;
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+.dialog .next { text-align: right; font-size: 0.7em; opacity: 0.7; margin-top: 6px; }
+.choices { display: flex; gap: 10px; margin-top: 10px; }
+
+/* ---------- menus ---------- */
+.screen {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 16px;
+  text-align: center;
+  background: #1e2a3acc;
+  color: #fff;
+  font-size: clamp(13px, 1.8vw, 19px);
+  overflow-y: auto;
+}
+.screen h1, .screen h2, .screen h3 {
+  font-family: 'Press Start 2P', monospace;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 #000;
+  margin: 4px 0;
+  line-height: 1.4;
+}
+.screen h1 { font-size: clamp(22px, 5vw, 48px); }
+.screen h2 { font-size: clamp(14px, 2.6vw, 26px); }
+.screen h3 { font-size: clamp(11px, 1.8vw, 16px); }
+.screen p { margin: 4px 0; max-width: 640px; }
+.screen .small { font-size: 0.8em; opacity: 0.7; }
+.screen .note {
+  background: var(--paper); color: var(--ink);
+  border-radius: 8px; padding: 6px 12px;
+}
+
+button {
+  font: inherit;
+  font-weight: 800;
+  background: var(--yellow);
+  color: var(--ink);
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 18px;
+  box-shadow: 3px 3px 0 #000;
+  cursor: pointer;
+  margin-top: 6px;
+}
+button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000; }
+
+.cards { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.card {
+  width: clamp(110px, 18vw, 170px);
+  background: var(--paper); color: var(--ink);
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: clamp(11px, 1.4vw, 14px);
+}
+.card.picked { outline: 5px solid var(--yellow); transform: translateY(-4px); }
+.card canvas { width: 48px; height: 56px; image-rendering: pixelated; }
+.card h3 { font-family: 'Nunito', sans-serif; color: var(--ink); text-shadow: none; font-size: 1.1em; }
+.card p { margin: 0; }
+
+/* ---------- side panel ---------- */
+.side {
+  background: var(--paper);
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 4px 4px 0 #0005;
+  align-self: start;
+}
+.side h2 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  margin: 14px 0 8px;
+}
+.side h2:first-child { margin-top: 0; }
+.side ul { list-style: none; margin: 0; padding: 0; }
+.items li { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+.items .icon { font-size: 22px; }
+.notes li {
+  font-size: 14px;
+  margin-bottom: 6px;
+  padding-left: 10px;
+  border-left: 4px solid var(--amber);
+}
+.empty { opacity: 0.6; border: none !important; padding: 0 !important; }
+.controls li { font-size: 14px; margin-bottom: 4px; }
+kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 0 4px;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+}
