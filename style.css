@@ -21,9 +21,8 @@ body {
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 16px;
-  max-width: 1280px;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 1100px;
   margin: 0 auto;
   padding: 16px;
 }
@@ -35,12 +34,13 @@ body {
   border-radius: 10px;
   padding: 8px 10px;
   margin-bottom: 10px;
-  display: grid;
-  gap: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   box-shadow: 4px 4px 0 #0005;
 }
+.hud .gap { margin-left: 12px; }
 .hud.dim { opacity: 0.45; }
-.hud-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .label { font-weight: 800; font-size: 14px; }
 .pill {
   border: 2px solid var(--line);
@@ -64,7 +64,7 @@ body {
   overflow: hidden;
 }
 .bar > div:first-child { height: 100%; background: var(--yellow); }
-.bar.noise { flex: 0 1 180px; }
+.bar.noise { flex: 0 1 140px; min-width: 70px; }
 #noise-fill { background: #90be6d; transition: width 0.1s; }
 #noise-fill.loud { background: var(--red); }
 #ride-marks { position: absolute; inset: 0; }
@@ -72,8 +72,6 @@ body {
   position: absolute; top: 0; bottom: 0;
   background: repeating-linear-gradient(45deg, #80ed99aa 0 6px, #2a9d8faa 6px 12px);
 }
-.bar .end { position: absolute; right: 2px; top: -3px; font-size: 14px; }
-.alert { font-size: 16px; letter-spacing: 2px; color: var(--red); }
 
 /* ---------- game picture ---------- */
 .stage {
@@ -195,32 +193,49 @@ button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000; }
 .card h3 { font-family: 'Nunito', sans-serif; color: var(--ink); text-shadow: none; font-size: 1.1em; }
 .card p { margin: 0; }
 
-/* ---------- side panel ---------- */
-.side {
-  background: var(--paper);
-  border: 3px solid var(--line);
-  border-radius: 10px;
-  padding: 12px 16px;
-  box-shadow: 4px 4px 0 #0005;
-  align-self: start;
+/* ---------- under the game ---------- */
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  color: #fff;
 }
-.side h2 {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 13px;
-  margin: 14px 0 8px;
+.toolbar button { margin-top: 0; font-size: 15px; padding: 4px 12px; }
+.bag { display: flex; gap: 10px; font-size: 22px; margin-right: auto; }
+.bag .empty { font-size: 15px; opacity: 0.6; }
+
+/* ---------- bag and help screens ---------- */
+.screen .list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 6px;
+  max-width: 640px; text-align: left;
 }
-.side h2:first-child { margin-top: 0; }
-.side ul { list-style: none; margin: 0; padding: 0; }
-.items li { display: flex; gap: 8px; margin-bottom: 8px; font-size: 14px; }
-.items .icon { font-size: 22px; }
-.notes li {
-  font-size: 14px;
-  margin-bottom: 6px;
-  padding-left: 10px;
-  border-left: 4px solid var(--amber);
+.screen .list li {
+  display: flex; gap: 10px; align-items: center;
+  background: var(--paper); color: var(--ink);
+  border-radius: 8px; padding: 6px 12px;
 }
-.empty { opacity: 0.6; border: none !important; padding: 0 !important; }
-.controls li { font-size: 14px; margin-bottom: 4px; }
+.screen .list .icon { font-size: 1.4em; }
+.howto {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 32px;
+  text-align: left;
+  max-width: 640px;
+  margin: 6px 0;
+}
+.howto > div { display: flex; align-items: center; gap: 10px; }
+.howto .keys { display: inline-flex; gap: 2px; min-width: 5.5em; }
+.howto kbd { font-size: 0.85em; color: var(--ink); }
+.chip {
+  display: inline-block; min-width: 1.6em;
+  border: 2px solid #000; border-radius: 6px;
+  color: #000; font-weight: 800;
+}
+.chip.warn { background: #ffd166; }
+.chip.danger { background: var(--red); color: #fff; }
 kbd {
   display: inline-block;
   min-width: 20px;
@@ -233,6 +248,6 @@ kbd {
   text-align: center;
 }
 
-@media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; }
+@media (max-width: 700px) {
+  .howto { grid-template-columns: 1fr; }
 }

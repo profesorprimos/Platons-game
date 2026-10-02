@@ -28,6 +28,8 @@ function keyName(e) {
     case 'j': case 'J': return 'joke';
     case 'y': case 'Y': return 'yes';
     case 'n': case 'N': return 'no';
+    case 'b': case 'B': return 'bag';
+    case 'h': case 'H': return 'help';
   }
   return null;
 }
@@ -68,6 +70,8 @@ let level = null;
 let dialog = null;
 let screenAction = null;
 let selectIndex = 0;
+let seenHelp = false;
+let dialogClosedAt = 0;   // stops a fast E press from starting the same talk again
 
 function newGame() {
   game.day = 1;
@@ -84,12 +88,12 @@ const weekday = () => WEEKDAYS[(game.day - 1) % 5];
 
 function addItem(item, n = 1) {
   game.items[item] = (game.items[item] || 0) + n;
-  renderSide();
+  renderBag();
 }
 function removeItem(item, n = 1) {
   game.items[item] = Math.max(0, (game.items[item] || 0) - n);
   if (!game.items[item]) delete game.items[item];
-  renderSide();
+  renderBag();
 }
 
 function todayHabit() {
@@ -99,7 +103,7 @@ function todayHabit() {
 function learn(id) {
   if (game.secrets.has(id)) return;
   game.secrets.add(id);
-  renderSide();
+  renderBag();
 }
 
 // ---------------- Screens (title, pick a character, day start…) ----------------
@@ -139,8 +143,9 @@ function showSelect() {
     <p class="small">← → to change, Enter to choose</p>`, () => {
     game.character = CHARACTERS[selectIndex];
     newGame();
-    renderSide();
-    showDayIntro();
+    renderBag();
+    if (seenHelp) showDayIntro();
+    else showHelp(showDayIntro);
   });
   document.querySelectorAll('.card').forEach((card) => {
     const i = Number(card.dataset.i);
@@ -148,6 +153,27 @@ function showSelect() {
     card.onclick = () => { selectIndex = i; showSelect(); };
   });
   game.screen = 'select';
+}
+
+function helpHtml() {
+  return `
+    <h2>How to play</h2>
+    <div class="howto">
+      <div><span class="keys"><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd></span> Move</div>
+      <div><span class="keys"><kbd>Shift</kbd></span> Run (fast, but LOUD)</div>
+      <div><span class="keys"><kbd>E</kbd></span> Talk to a student</div>
+      <div><span class="keys"><kbd>B</kbd></span> Your bag and notebook</div>
+      ${isChar('funny') ? '<div><span class="keys"><kbd>J</kbd></span> Tell a joke</div>' : ''}
+      <div><span class="keys"><kbd>H</kbd></span> See this help again</div>
+    </div>
+    <p>🪑 Sit in a seat to hide.</p>
+    <p><span class="chip warn">?</span> The driver is going to look. Hide!
+       &nbsp; <span class="chip danger">!</span> The driver is looking!</p>`;
+}
+
+function showHelp(next) {
+  seenHelp = true;
+  showScreen(`${helpHtml()}<button data-go>OK, let's go ▶</button>`, next);
 }
 
 function showDayIntro() {
@@ -240,6 +266,7 @@ function advanceDialog() {
   if (dialog.i >= dialog.pages.length) {
     const done = dialog.onClose;
     dialog = null;
+    dialogClosedAt = performance.now();
     renderDialog();
     if (done) done();
   } else {
@@ -374,8 +401,10 @@ function updateBus(dt) {
   L.time += dt;
   L.scroll += dt * 50;
 
-  if (took('action')) { tryTalk(); if (dialog) return; }
+  if (took('action') && performance.now() - dialogClosedAt > 400) { tryTalk(); if (dialog) return; }
   if (took('joke')) tryJoke();
+  if (took('bag')) { openBag(); return; }
+  if (took('help')) { showHelp(hideScreen); return; }
 
   movePlayer(dt);
   L.noise = Math.max(0, L.noise - 22 * dt);
@@ -488,16 +517,60 @@ function updateDriver(dt) {
 }
 
 function tryTalk() {
-  const P = level.player;
-  if (P.moving) return;
-  const n = level.npcs.find((m) => Math.abs(m.x - P.x) + Math.abs(m.y - P.y) === 1);
+  const n = nearbyStudent();
   if (n) talkTo(n);
 }
 
-function nearbyStudent() {
+// The tile you are on (or nearly on, if you are walking)
+function playerTile() {
   const P = level.player;
-  if (P.moving) return null;
-  return level.npcs.find((m) => Math.abs(m.x - P.x) + Math.abs(m.y - P.y) === 1) || null;
+  if (P.moving && P.prog > 0.5) return { x: P.tx, y: P.ty };
+  if (P.moving) return { x: P.fx, y: P.fy };
+  return { x: P.x, y: P.y };
+}
+
+// The best student to talk to: next to you, even diagonally.
+// Students with something new to say come first.
+function nearbyStudent() {
+  const p = playerTile();
+  let best = null, bestScore = -1;
+  for (const n of level.npcs) {
+    const dx = Math.abs(n.x - p.x), dy = Math.abs(n.y - p.y);
+    if (dx > 1 || dy > 1) continue;
+    const score = (n.generic ? 0 : 10) + (hasSomethingNew(n) ? 10 : 0) + (dx + dy === 1 ? 1 : 0);
+    if (score > bestScore) { best = n; bestScore = score; }
+  }
+  return best;
+}
+
+// Click on a student to talk to them
+canvas.addEventListener('click', (e) => {
+  if (game.screen !== 'bus' || !level || dialog || screenAction || level.over) return;
+  const r = canvas.getBoundingClientRect();
+  const x = Math.floor(((e.clientX - r.left) / r.width * 320 - OX) / TILE);
+  const y = Math.floor(((e.clientY - r.top) / r.height * 180 - OY) / TILE);
+  const n = npcAt(x, y);
+  if (!n) return;
+  const p = playerTile();
+  if (Math.abs(n.x - p.x) <= 1 && Math.abs(n.y - p.y) <= 1) talkTo(n);
+  else banner('Walk next to them to talk.');
+});
+
+function openBag() {
+  const c = game.character;
+  const items = Object.keys(game.items).filter(has);
+  const secrets = [...game.secrets];
+  showScreen(`
+    <h2>Your bag</h2>
+    <ul class="list">${items.length
+      ? items.map((i) => `<li><span class="icon">${ITEMS[i].icon}</span><span><b>${ITEMS[i].name}${game.items[i] > 1 ? ` ×${game.items[i]}` : ''}</b> · ${ITEMS[i].text}</span></li>`).join('')
+      : '<li>Nothing yet.</li>'}</ul>
+    <h2>Notebook</h2>
+    <ul class="list">${secrets.length
+      ? secrets.map((s) => `<li><span class="icon">📓</span><span>${SECRETS[s].text}</span></li>`).join('')
+      : '<li>No secrets yet. Talk to students with a speech bubble!</li>'}</ul>
+    <p class="small"><b>${c.name}:</b> ${c.power}</p>
+    <button data-go>Close</button>`, hideScreen);
 }
 
 function hasSomethingNew(n) {
@@ -518,7 +591,7 @@ function talkTo(n) {
 
   if (n.secret && !game.secrets.has(n.secret)) {
     pages.push(say(n.secretLine));
-    pages.push({ who: '', text: '📓 You wrote a new secret in your notebook!' });
+    pages.push({ who: '', text: '📓 You wrote a new secret in your notebook! (Press B to read it.)' });
     learn(n.secret);
   } else if (n.again && !n.trade) {
     pages.push(say(n.again));
@@ -686,7 +759,17 @@ function drawBus() {
   // students
   for (const n of L.npcs) {
     drawPerson(ctx, tileX(n.x) + 1, tileY(n.y) + 3, n.look, true);
-    if (hasSomethingNew(n)) drawBubble(ctx, tileX(n.x) + 8, tileY(n.y) - 6, '...', '#ffffff');
+    if (hasSomethingNew(n) && n !== nearbyStudent()) drawBubble(ctx, tileX(n.x) + 8, tileY(n.y) - 6, '...', '#ffffff');
+  }
+
+  // the student you can talk to now
+  const near = !dialog && !L.over && nearbyStudent();
+  if (near) {
+    const X = tileX(near.x), Y = tileY(near.y);
+    ctx.strokeStyle = '#ffe066';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(X + 0.5, Y + 0.5, TILE - 1, TILE - 1);
+    drawKey(ctx, X + 4, Y - 9, 'E');
   }
 
   // you
@@ -793,20 +876,14 @@ function updateHud() {
   const hud = $('hud');
   if (game.screen !== 'bus' || !level) { hud.classList.add('dim'); return; }
   hud.classList.remove('dim');
-  const L = level, D = L.driver;
-  $('hud-day').textContent = `Day ${game.day} of ${DAYS} · ${weekday()}`;
-  $('hud-driver').textContent = `Driver: ${DRIVER_STATUS[D.state]}`;
-  $('hud-driver').className = `pill ${D.state === 'look' ? 'danger' : D.state === 'warn' ? 'warn' : D.state === 'road' ? '' : 'safe'}`;
-  const hidden = isHidden();
-  $('hud-status').textContent = hidden ? 'You: HIDDEN in a seat' : 'You: VISIBLE';
-  $('hud-status').className = `pill ${hidden ? 'safe' : 'warn'}`;
+  const L = level;
+  $('hud-day').textContent = `Day ${game.day} · ${weekday()}`;
   $('ride-fill').style.width = `${Math.min(100, (L.time / RIDE_SECONDS) * 100)}%`;
   $('noise-fill').style.width = `${L.noise}%`;
   $('noise-fill').className = L.noise >= 50 ? 'loud' : '';
-  $('alert').textContent = alertDots();
 
   const n = nearbyStudent();
-  $('hint').textContent = dialog ? '' : n ? `Press E to talk to ${n.generic ? 'this student' : n.name}` : '';
+  $('hint').textContent = dialog || L.over ? '' : n ? `💬 Press E to talk to ${n.generic ? 'this student' : n.name}` : '';
 
   // show today's habit on the ride bar if you know the secret (or you are clever)
   const habit = todayHabit();
@@ -821,20 +898,11 @@ function updateHud() {
   }
 }
 
-function renderSide() {
-  const c = game.character;
-  const powers = $('me');
-  powers.innerHTML = `<b>${c.name}</b><br>${c.power}`;
-
+function renderBag() {
   const items = Object.keys(game.items).filter(has);
-  $('items').innerHTML = items.length
-    ? items.map((i) => `<li><span class="icon">${ITEMS[i].icon}</span><div><b>${ITEMS[i].name}${game.items[i] > 1 ? ` ×${game.items[i]}` : ''}</b><br>${ITEMS[i].text}</div></li>`).join('')
-    : '<li class="empty">Nothing yet.</li>';
-
-  const secrets = [...game.secrets];
-  $('notes').innerHTML = secrets.length
-    ? secrets.map((s) => `<li>${SECRETS[s].text}</li>`).join('')
-    : '<li class="empty">No secrets yet. Talk to students with a speech bubble!</li>';
+  $('bag').innerHTML = items.length
+    ? items.map((i) => `<span title="${ITEMS[i].name}">${ITEMS[i].icon}${game.items[i] > 1 ? `×${game.items[i]}` : ''}</span>`).join('')
+    : '<span class="empty">empty</span>';
 }
 
 // ---------------- Main loop ----------------
@@ -848,7 +916,9 @@ function loop(now) {
     if (took('left')) { selectIndex = (selectIndex + CHARACTERS.length - 1) % CHARACTERS.length; showSelect(); }
     if (took('right')) { selectIndex = (selectIndex + 1) % CHARACTERS.length; showSelect(); }
   }
-  if (screenAction && (took('enter') || took('action'))) screenAction();
+  // B or H closes the bag / help during the ride
+  if (screenAction && game.screen === 'bus' && (took('bag') || took('help'))) hideScreen();
+  else if (screenAction && (took('enter') || took('action'))) screenAction();
   else if (game.screen === 'bus' && level) updateBus(dt);
   else if (level) level.scroll += dt * 50;
 
@@ -858,11 +928,14 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 
+$('bag-btn').onclick = () => { if (game.screen === 'bus' && !dialog && !screenAction) openBag(); };
+$('help-btn').onclick = () => { if (game.screen === 'bus' && !dialog && !screenAction) showHelp(hideScreen); };
+
 game.screen = 'title';
 level = makeBusLevel();
 level.player.x = -5;  // hide the player behind the title screen
 level.player.y = -5;
 newGame();
-renderSide();
+renderBag();
 showTitle();
 requestAnimationFrame(loop);

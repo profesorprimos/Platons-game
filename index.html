@@ -13,21 +13,12 @@
   <main class="layout">
     <section class="play">
       <div id="hud" class="hud dim">
-        <div class="hud-row">
-          <span id="hud-day" class="pill">Day 1</span>
-          <span id="hud-driver" class="pill">Driver</span>
-          <span id="hud-status" class="pill">You</span>
-        </div>
-        <div class="hud-row">
-          <span class="label">Bus ride</span>
-          <div class="bar ride"><div id="ride-fill"></div><div id="ride-marks"></div><span class="end">🏫</span></div>
-        </div>
-        <div class="hud-row">
-          <span class="label">Noise</span>
-          <div class="bar noise"><div id="noise-fill"></div></div>
-          <span class="label">Driver alert</span>
-          <span id="alert" class="alert">○○○○○</span>
-        </div>
+        <span id="hud-day" class="pill">Day 1</span>
+        <span class="label">🚌</span>
+        <div class="bar ride"><div id="ride-fill"></div><div id="ride-marks"></div></div>
+        <span class="label">🏫</span>
+        <span class="label gap">Noise</span>
+        <div class="bar noise"><div id="noise-fill"></div></div>
       </div>
 
       <div class="stage">
@@ -37,24 +28,15 @@
         <div id="dialog" class="dialog hidden"></div>
         <div id="screen" class="screen"></div>
       </div>
+
+      <div class="toolbar">
+        <span class="label">Bag:</span>
+        <span id="bag" class="bag"></span>
+        <button id="bag-btn" type="button">🎒 Bag &amp; notebook (B)</button>
+        <button id="help-btn" type="button">❓ How to play (H)</button>
+      </div>
     </section>
 
-    <aside class="side">
-      <h2>You</h2>
-      <p id="me"></p>
-      <h2>Items</h2>
-      <ul id="items" class="items"></ul>
-      <h2>Notebook</h2>
-      <ul id="notes" class="notes"></ul>
-      <h2>Controls</h2>
-      <ul class="controls">
-        <li><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move</li>
-        <li><kbd>Shift</kbd> run (fast but LOUD)</li>
-        <li><kbd>E</kbd> or <kbd>Space</kbd> talk</li>
-        <li><kbd>J</kbd> tell a joke (Funny One)</li>
-        <li><kbd>Y</kbd> / <kbd>N</kbd> yes / no</li>
-      </ul>
-    </aside>
   </main>
 
   <script src="js/data.js"></script>

@@ -93,3 +93,18 @@ function drawBubble(ctx, x, y, kind, colour) {
     ctx.fillRect(x + 6, y + 4, 1, 1);
   }
 }
+
+// A little keyboard key with a letter on it (only 'E' for now)
+function drawKey(ctx, x, y, letter) {
+  ctx.fillStyle = '#2b2d42';
+  ctx.fillRect(x, y, 9, 9);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(x + 1, y + 1, 7, 7);
+  ctx.fillStyle = '#2b2d42';
+  if (letter === 'E') {
+    ctx.fillRect(x + 3, y + 2, 1, 5);
+    ctx.fillRect(x + 4, y + 2, 2, 1);
+    ctx.fillRect(x + 4, y + 4, 1, 1);
+    ctx.fillRect(x + 4, y + 6, 2, 1);
+  }
+}

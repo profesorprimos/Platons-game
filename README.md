@@ -14,9 +14,11 @@ Open `index.html` in a web browser. You do not need to install anything.
 |-----|--------------|
 | Arrow keys or W A S D | Move |
 | Shift | Run (fast but loud) |
-| E or Space | Talk to a student |
+| E or Space | Talk to the student next to you (or click on them) |
 | J | Tell a joke (only the Funny One can) |
 | Y / N | Say yes or no to a swap |
+| B | Open your bag and notebook |
+| H | See the controls again |
 
 ## How to change the game
 
