@@ -10,6 +10,8 @@ Open `index.html` in a web browser. You do not need to install anything.
 
 **Level 1: the school bus.** The bus driver took your bike key. Sneak to the front and take it back. You must be sitting in a seat when the bus gets to school. If the driver sees you in his mirror, you get caught.
 
+**Level 2: the classroom.** Maths with Mr Grumble. Find the hall pass, the ladder and the whoopee cushion, and be at a desk when the bell rings.
+
 | Key | What it does |
 |-----|--------------|
 | Arrow keys or W A S D | Move |
@@ -24,9 +26,10 @@ Open `index.html` in a web browser. You do not need to install anything.
 
 | File | What is inside |
 |------|----------------|
-| `js/data.js` | **Start here!** Characters, items, secrets, what the students say, and the map of the bus. You can change the words here. |
+| `js/data.js` | **Start here!** Characters, items, secrets, what the students say, and the maps of the bus and the classroom. You can change the words here. |
+| `js/levels.js` | The rules and drawings for each level (bus, classroom). Add new levels here. |
 | `js/sprites.js` | The pixel art for the people |
-| `js/game.js` | The game rules |
+| `js/game.js` | The game engine: moving, hiding, talking, getting caught |
 | `style.css` | Colours and layout of the page |
 
 For example, to change what Maya says, open `js/data.js`, find `Maya`, and change the words between the quotes `'...'`.

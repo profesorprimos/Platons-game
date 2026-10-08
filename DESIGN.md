@@ -118,13 +118,33 @@ The bus driver took your **bike key** yesterday because you sang too loudly. The
 - **Students to talk to:** Maya, Leo, Zoe, Ben, Sam and Quinn. Some tell you secrets, some want to swap.
 - **Swaps:** 2 sweets → sunglasses (Leo), 1 sweet → helicopter hat (Zoe), sunglasses → quiet shoes (Quinn). Ben gives you a free sweet.
 
+## Level 2: the classroom (built!)
+
+A maths lesson with **Mr Grumble**. He uses his computer a lot.
+
+- **Goal:** find **3 important things** before the bell rings, and be **at a desk** when it rings:
+  - 🎫 the **hall pass**, on the cabinet next to Mr Grumble
+  - 🪜 the **folding ladder**, in the cupboard at the back
+  - 💨 the **whoopee cushion**, in the lost property box
+- **Hiding:** at any **empty desk**, or by the **bookshelf**.
+- **Mr Grumble** switches between his **computer** and **writing on the board** (both safe). Before he looks at the class, a **?** appears. When he looks, a **!** appears and the floor turns red.
+- When teachers are more alert, Mr Grumble **walks around the room**. He sees everything 2 steps around him.
+- **Helpful students have no names and no speech bubbles.** You have to find them by talking to students, without getting caught.
+- **Mr Grumble's habits:** Monday slow computer, Tuesday giant equation, Wednesday leaves for coffee, Thursday his mum phones, Friday a video with the lights off.
+- **Funny items:** the ✨ **magic equation** multiplies your sweets by 2 every morning (up to 10). **Cardboard you** sits in your place at the end of a level, so you don't need to be hiding (works once).
+- You keep the things you find. If you get caught, the teacher takes one back and it goes back where you found it.
+
+## How to win (so far)
+
+Get the 🔑 **bike key** on the bus **and** the 🎫 🪜 💨 from the classroom, within the 10 days. You don't need the key to go to the classroom.
+
 ### Character powers
 
 | Character | Power |
 |-----------|-------|
 | The Sporty One | Walks faster |
-| The Clever One | Sees the driver's habit for today on the bus bar, without being told |
-| The Funny One | Tells a joke once a day (press J). The driver laughs and stops watching for 6 seconds. |
+| The Clever One | Sees today's habit on the time bar, without being told |
+| The Funny One | Tells a joke once in each level (press J). Everybody laughs and stops watching for 6 seconds. |
 | The Quiet One | Makes half as much noise |
 
 ## Still to decide

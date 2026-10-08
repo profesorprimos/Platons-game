@@ -2,6 +2,7 @@
 //  PIXEL ART
 //  Each person is drawn from this little picture.
 //  H hair   K skin   E eyes   M mouth   T shirt   P trousers   S shoes
+//  (look.back = true draws the person from behind)
 // ============================================================
 
 const PERSON = [
@@ -44,6 +45,7 @@ function personSprite(look, seated) {
       if (ch === '.') continue;
       g.fillStyle = colours[ch];
       if (look.cap && r < 2) g.fillStyle = look.cap;
+      if (look.back && r >= 2 && r <= 5 && 'KEM'.includes(ch)) g.fillStyle = look.hair; // seen from behind
       g.fillRect(col, r, 1, 1);
     }
   }
@@ -51,7 +53,7 @@ function personSprite(look, seated) {
     g.fillStyle = look.cap;
     g.fillRect(9, 1, 3, 1);
   }
-  if (look.glasses) {
+  if (look.glasses && !look.back) {
     g.fillStyle = '#111111';
     g.fillRect(2, 3, 3, 1);
     g.fillRect(7, 3, 3, 1);

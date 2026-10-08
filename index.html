@@ -14,9 +14,11 @@
     <section class="play">
       <div id="hud" class="hud dim">
         <span id="hud-day" class="pill">Day 1</span>
-        <span class="label">🚌</span>
+        <span id="bar-start" class="label">🚌</span>
         <div class="bar ride"><div id="ride-fill"></div><div id="ride-marks"></div></div>
-        <span class="label">🏫</span>
+        <span id="bar-end" class="label">🏫</span>
+        <span class="label gap">Find</span>
+        <span id="goal" class="goal"></span>
         <span class="label gap">Noise</span>
         <div class="bar noise"><div id="noise-fill"></div></div>
       </div>
@@ -41,6 +43,7 @@
 
   <script src="js/data.js"></script>
   <script src="js/sprites.js"></script>
+  <script src="js/levels.js"></script>
   <script src="js/game.js"></script>
 </body>
 </html>
