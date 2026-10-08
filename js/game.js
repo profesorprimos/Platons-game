@@ -643,7 +643,7 @@ function openBag() {
     <h2>Notebook</h2>
     <ul class="list">${secrets.length
       ? secrets.map((s) => `<li><span class="icon">📓</span><span>${SECRETS[s].text}</span></li>`).join('')
-      : '<li>No secrets yet. Talk to students with a speech bubble!</li>'}</ul>
+      : '<li>No secrets yet. Talk to students to find them!</li>'}</ul>
     <p class="small"><b>${c.name}:</b> ${c.power}</p>
     <button data-go>Close</button>`, hideScreen);
 }

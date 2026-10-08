@@ -89,7 +89,8 @@ const DRIVER_STATUS = {
 // ---------- The bus ----------
 // #  wall        .  floor        S  empty seat     s  student (sleepy)
 // P  you         K  key hook     R  driver         =  dashboard    D  door
-// Capital letters are students you can talk to (see BUS_STUDENTS).
+// Capital letters are the helpful students (see BUS_STUDENTS).
+// On the bus they have no names and no speech bubbles: you must find them!
 // The front of the bus is on the RIGHT.
 const BUS_MAP = [
   '##################',

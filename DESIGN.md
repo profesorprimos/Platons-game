@@ -115,7 +115,7 @@ The bus driver took your **bike key** yesterday because you sang too loudly. The
 - The driver checks his mirror again and again. Before he looks, a **?** appears. When he looks, a **!** appears and the aisle turns red.
 - **Noise:** walking makes a little noise, running makes a lot. Too much noise makes the driver look.
 - **Driver habits:** each weekday the driver does something that stops him looking in the mirror (singing, coffee, a giant sandwich). Students tell you these secrets. Secrets you know appear as green stripes on the bus bar.
-- **Students to talk to:** Maya, Leo, Zoe, Ben, Sam and Quinn. Some tell you secrets, some want to swap.
+- **Helpful students have no names and no speech bubbles.** You have to find them by talking to students. Some tell you secrets, some want to swap.
 - **Swaps:** 2 sweets → sunglasses (Leo), 1 sweet → helicopter hat (Zoe), sunglasses → quiet shoes (Quinn). Ben gives you a free sweet.
 
 ## Level 2: the classroom (built!)

@@ -31,6 +31,7 @@ LEVELS.bus = {
   pickups: { K: 'bikeKey' },
   goals: ['bikeKey'],
   status: DRIVER_STATUS,
+  anonymous: true,  // no names or speech bubbles: find the helpful students yourself
   idleStates: ['road'],
   patrol: false,
 
@@ -52,6 +53,7 @@ LEVELS.bus = {
       { who: '', text: 'Yesterday the bus driver took your <b>bike key</b>, because you sang too loudly. 🎤' },
       { who: '', text: 'The key is hanging next to him, at the front of the bus. You need it to escape on your bike!' },
       { who: '', text: 'Get the key, and be <b>sitting in a seat</b> when the bus arrives at school.' },
+      { who: '', text: 'Some students know secrets or have useful things to swap. But who? Talk to them to find out!' },
       { who: '', text: 'Don\'t let the driver see you in his mirror. When you sit in a seat, you are hidden. Don\'t make too much noise!' },
     ];
   },
