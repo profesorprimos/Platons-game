@@ -31,7 +31,7 @@ LEVELS.bus = {
   pickups: { K: 'bikeKey' },
   goals: ['bikeKey'],
   status: DRIVER_STATUS,
-  anonymous: true,  // no names or speech bubbles: find the helpful students yourself
+  anonymous: true,  // students have no names, just a speech bubble when they have something for you
   idleStates: ['road'],
   patrol: false,
 
@@ -53,7 +53,7 @@ LEVELS.bus = {
       { who: '', text: 'Yesterday the bus driver took your <b>bike key</b>, because you sang too loudly. 🎤' },
       { who: '', text: 'The key is hanging next to him, at the front of the bus. You need it to escape on your bike!' },
       { who: '', text: 'Get the key, and be <b>sitting in a seat</b> when the bus arrives at school.' },
-      { who: '', text: 'Some students know secrets or have useful things to swap. But who? Talk to them to find out!' },
+      { who: '', text: 'Students with a speech bubble 💬 know a secret or have something to swap. Talk to them!' },
       { who: '', text: 'Don\'t let the driver see you in his mirror. When you sit in a seat, you are hidden. Don\'t make too much noise!' },
     ];
   },
@@ -63,12 +63,12 @@ LEVELS.bus = {
   lateText: 'The bus stops at school, and you are still standing in the aisle!',
   shout: 'HEY! SIT DOWN AND STAY THERE!',
   caughtLines: [
-    'You have to sit next to the driver until school. Then you spend the whole day being watched.',
+    'You have to sit next to the driver for the rest of the ride.',
   ],
 
   finish() {
     const pages = [{ who: 'Bus driver', text: 'Everybody off! Have a lovely, BORING day.' }];
-    if (!has('bikeKey')) pages.push({ who: '', text: 'You still don\'t have your bike key. You can try again tomorrow morning.' });
+    if (!has('bikeKey')) pages.push({ who: '', text: 'You still don\'t have your bike key. You can try again tomorrow morning on the bus.' });
     openDialog(pages, nextLevel);
   },
 
@@ -204,7 +204,7 @@ LEVELS.classroom = {
   pickups: { H: 'hallPass', L: 'ladder', W: 'whoopeeCushion' },
   goals: CLASS_GOALS,
   status: TEACHER_STATUS,
-  anonymous: true,  // no names or speech bubbles: find the helpful students yourself
+  anonymous: true,  // students have no names, just a speech bubble when they have something for you
   idleStates: ['computer', 'board'],
   patrol: true,   // when he is more alert, he walks around the room
 
@@ -237,7 +237,7 @@ LEVELS.classroom = {
       { who: TEACHER_NAME, text: 'Good morning, class. Today: fractions. For ninety minutes. Isn\'t that exciting?' },
       { who: '', text: 'BORING! You need 3 things for your escape. Find them all before the bell rings:' },
       { who: '', text: '🎫 The <b>hall pass</b>, on the cabinet next to Mr Grumble.<br>🪜 The <b>folding ladder</b>, in the cupboard at the back.<br>💨 The <b>whoopee cushion</b>, in the lost property box.' },
-      { who: '', text: 'Some students know secrets or have useful things. But who? Talk to them to find out!' },
+      { who: '', text: 'Students with a speech bubble 💬 know a secret or have something to swap. Talk to them!' },
       { who: '', text: 'Hide at an <b>empty desk</b> or by the <b>bookshelf</b>. Move when Mr Grumble is busy with his computer or the board. Be at a desk when the bell rings!' },
     ];
   },
@@ -252,7 +252,7 @@ LEVELS.classroom = {
   lateText: 'The bell rings, and you are not at a desk!',
   shout: 'And WHERE do you think you are going? Sit DOWN!',
   caughtLines: [
-    'You have to sit at the front, next to Mr Grumble, for the rest of the day. So. Many. Fractions.',
+    'You have to sit at the front, next to Mr Grumble, until the bell. So. Many. Fractions.',
   ],
 
   finish() {
@@ -266,10 +266,7 @@ LEVELS.classroom = {
       openDialog([
         { who: '', text: '🔔 RIIIING! The bell rings.' },
         { who: '', text: `You found ${found} of 3 things. You keep them for tomorrow.` },
-      ], () => endDay(`Day ${game.day} is over`, [
-        'The rest of the day is very, very boring.',
-        'Tomorrow, find the things you still need!',
-      ]));
+      ], nextLevel);
     }
   },
 

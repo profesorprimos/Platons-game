@@ -81,6 +81,7 @@ function newGame() {
   game.done = new Set();
   game.caught = 0;
   game.morningNote = '';
+  game.note = '';
 }
 
 const has = (item) => (game.items[item] || 0) > 0;
@@ -206,8 +207,16 @@ function showLevelIntro(id) {
   showScreen(`
     <h2>${def.title}</h2>
     <p>Day ${game.day} — ${weekday()}</p>
+    ${takeNote()}
     ${habitHint(id)}
     <button data-go>Go ▶</button>`, () => startLevel(id));
+}
+
+// A message about what just happened (like getting caught), shown once
+function takeNote() {
+  const note = game.note;
+  game.note = '';
+  return note ? `<p class="note">${note}</p>` : '';
 }
 
 function alertDots() {
@@ -218,6 +227,7 @@ function endDay(title, lines) {
   game.screen = 'result';
   showScreen(`
     <h2>${title}</h2>
+    ${takeNote()}
     ${lines.map((l) => `<p>${l}</p>`).join('')}
     <button data-go>${game.day >= DAYS ? 'Go to the assembly…' : 'Next day ▶'}</button>`, nextDay);
 }
@@ -610,9 +620,7 @@ function nearbyStudent() {
   for (const n of level.npcs) {
     const dx = Math.abs(n.x - p.x), dy = Math.abs(n.y - p.y);
     if (dx > 1 || dy > 1) continue;
-    // (in a level with secret helpers, don't give away who they are)
-    const helpful = level.def.anonymous ? 0 : (n.generic ? 0 : 10) + (hasSomethingNew(n) ? 10 : 0);
-    const score = helpful + (dx + dy === 1 ? 1 : 0);
+    const score = (n.generic ? 0 : 10) + (hasSomethingNew(n) ? 10 : 0) + (dx + dy === 1 ? 1 : 0);
     if (score > bestScore) { best = n; bestScore = score; }
   }
   return best;
@@ -741,11 +749,12 @@ function caught(reason) {
     { who: '', text: reason },
     { who: def.shoutName, text: def.shout },
     { who: '', text: lost },
-  ], () => endDay('Caught!', [
-    ...def.caughtLines,
-    'Tomorrow everybody will watch you more carefully.',
-    `Teacher alert: ${alertDots()}`,
-  ]));
+    ...def.caughtLines.map((text) => ({ who: '', text })),
+  ], () => {
+    // the school day goes on, but everybody watches you more carefully
+    game.note = `😬 You got caught. Everybody is watching you more carefully now. Teacher alert: ${alertDots()}`;
+    nextLevel();
+  });
 }
 
 function isPickup(item) {
@@ -801,7 +810,7 @@ function draw() {
   const near = !dialog && !L.over && game.screen === 'play' && nearbyStudent();
   for (const n of L.npcs) {
     def.drawSeated(n.x, n.y, n.look);
-    if (!def.anonymous && hasSomethingNew(n) && n !== near) drawBubble(ctx, tileX(n.x) + 8, tileY(n.y) - 6, '...', '#ffffff');
+    if (hasSomethingNew(n) && n !== near) drawBubble(ctx, tileX(n.x) + 8, tileY(n.y) - 6, '...', '#ffffff');
   }
 
   // the student you can talk to now
