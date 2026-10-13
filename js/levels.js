@@ -8,7 +8,7 @@
 // ============================================================
 
 // The order of the school day. Add new levels here when they are built.
-const LEVEL_ORDER = ['bus', 'classroom'];
+const LEVEL_ORDER = ['bus', 'classroom', 'break'];
 
 const LEVELS = {};
 
@@ -424,6 +424,228 @@ LEVELS.classroom = {
     ctx.fillRect(tileX(3), tileY(0), TILE * 7, TILE);
   },
 };
+
+// ------------------------------------------------------------
+//  LEVEL 3: BREAK TIME
+//  Explore the playground and make your escape plan.
+// ------------------------------------------------------------
+const WHISTLE_LOOK = { hair: '#ffb703', skin: '#e0ac69', shirt: '#2b9348', pants: '#2b9348' };
+// Ms Whistle walks around this loop
+const WHISTLE_ROUTE = [{ x: 6, y: 3 }, { x: 30, y: 3 }, { x: 30, y: 14 }, { x: 6, y: 14 }];
+
+LEVELS.break = {
+  title: 'Break time',
+  map: BREAK_MAP,
+  students: BREAK_STUDENTS,
+  lines: BREAK_LINES,
+  seconds: BREAK_SECONDS,
+  barIcons: ['🍎', '🔔'],
+  who: DUTY_TEACHER,
+  Who: DUTY_TEACHER,
+  shoutName: DUTY_TEACHER,
+  camera: true,         // the playground is bigger than the screen
+  mode: 'patrol',       // Ms Whistle walks around and sees what is near her
+  noNoise: true,        // it is noisy at break anyway!
+  floor: '.',
+  walk: '.:,gpkqbGYOx',
+  hide: 'b',
+  outOfBounds: ':,bGYOx',
+  pickups: { x: 'football' },
+  spots: { G: 'gate', Y: 'wall', O: 'hedge' },
+  goals: [],
+  goalList() {
+    return Object.entries(ESCAPE_ROUTES).map(([id, r]) => ({ icon: r.icon, got: game.routes.has(id), title: r.name }));
+  },
+  status: DUTY_STATUS,
+  idleStates: ['patrol'],
+  patrol: false,
+
+  pickIdle() { return 'patrol'; },
+  idleTime() { return this.stepTime(); },
+  stepTime() { return Math.max(0.25, 0.42 - game.alert * 0.03); },
+  vision() { return 4 + game.alert * 0.5; },           // how far she can see
+  spotTime() { return Math.max(0.35, 0.8 - game.alert * 0.08); },
+
+  // Turn the corners of her route into a list of steps
+  patrolPath() {
+    const path = [];
+    WHISTLE_ROUTE.forEach((a, i) => {
+      const b = WHISTLE_ROUTE[(i + 1) % WHISTLE_ROUTE.length];
+      let { x, y } = a;
+      while (x !== b.x || y !== b.y) {
+        path.push({ x, y });
+        x += Math.sign(b.x - x);
+        y += Math.sign(b.y - y);
+      }
+    });
+    return path;
+  },
+  place(W) {
+    const habit = todayHabit('break');
+    if (W.state === 'patrol') Object.assign(W, W.path[W.pathI]);
+    else if (habit && W.state === habit.habit) Object.assign(W, habit.at);
+  },
+
+  intro() {
+    const found = game.routes.size;
+    if (found) {
+      return [{ who: '', text: `Break time! You know ${found} of 3 ways out. Explore, swap and get what you need. Be back in bounds when the bell rings!` }];
+    }
+    return [
+      { who: '', text: '🔔 Break time! Fifteen minutes of freedom. Well… almost.' },
+      { who: '', text: 'Make your <b>escape plan</b>! There are <b>3 secret ways out</b> of school. Find them, and find out what you need for each one.' },
+      { who: '', text: 'You can walk around the playground. But the <b>striped areas are OUT OF BOUNDS</b>. If Ms Whistle sees you there, you are caught!' },
+      { who: '', text: 'Ms Whistle only sees the area around her (the light circle). Hide in the bushes, and be back in bounds when the bell rings!' },
+    ];
+  },
+  pickupText: {
+    football: '⚽ You found the football! Somebody wants it back…',
+  },
+  sunglassesText: '🕶️ Ms Whistle sees you… but thinks you are a famous football coach!',
+  seenText: 'PHWEEEET! Ms Whistle sees you out of bounds!',
+  lateText: 'The bell rings, and you are still out of bounds!',
+  shout: 'OUT OF BOUNDS! Back to the playground, NOW!',
+  caughtLines: [
+    'You have to stand next to Ms Whistle until the bell. She tells you about her 47 favourite whistles.',
+  ],
+
+  finish() {
+    openDialog([
+      { who: '', text: '🔔 RIIIING! Break is over.' },
+      { who: '', text: `Ways out in your escape plan: ${game.routes.size} of 3. (Press B to see your plan.)` },
+    ], nextLevel);
+  },
+
+  // ---------- drawing ----------
+  drawBackground() {
+    ctx.fillStyle = '#80b918';
+    ctx.fillRect(0, 0, 320, 180);
+  },
+
+  drawTile(x, y, c, L) {
+    const X = tileX(x), Y = tileY(y);
+    if (X < -TILE || X > 320 || Y < -TILE * 2 || Y > 180) return;   // off the screen
+    const ground = {
+      '.': '#adb5bd', ':': '#ced4da', g: '#80b918', ',': '#55a630', p: '#70e000', k: '#e76f51', q: '#f4d58d',
+    };
+    const under = ground[c] || ({ b: '#55a630', x: '#55a630', Y: '#55a630', G: '#ced4da', n: '#adb5bd', X: '#adb5bd', T: '#adb5bd' })[c];
+    if (under) {
+      ctx.fillStyle = under;
+      ctx.fillRect(X, Y, TILE, TILE);
+    }
+    if (c === 'p') {                              // pitch lines
+      ctx.fillStyle = '#f8f9fa';
+      if (x === 7) ctx.fillRect(X, Y, 1, TILE);
+      if (x === 21) ctx.fillRect(X + 15, Y, 1, TILE);
+      if (y === 4) ctx.fillRect(X, Y, TILE, 1);
+      if (y === 9) ctx.fillRect(X, Y + 15, TILE, 1);
+      if (x === 14) ctx.fillRect(X + 8, Y, 1, TILE);
+    } else if (c === 'k') {                       // court lines
+      ctx.fillStyle = '#f8f9fa';
+      if (x === 25) ctx.fillRect(X, Y, 1, TILE);
+      if (x === 32) ctx.fillRect(X + 15, Y, 1, TILE);
+      if (y === 4) ctx.fillRect(X, Y, TILE, 1);
+      if (y === 7) ctx.fillRect(X, Y + 15, TILE, 1);
+    } else if (c === '#' || c === 'D') {          // school building
+      ctx.fillStyle = '#bc4749';
+      ctx.fillRect(X, Y, TILE, TILE);
+      ctx.fillStyle = '#a7383a';
+      ctx.fillRect(X, Y + 5, TILE, 1);
+      ctx.fillRect(X, Y + 11, TILE, 1);
+      if (c === 'D') {
+        ctx.fillStyle = '#6f4518';
+        ctx.fillRect(X + 2, Y + 1, 12, 15);
+      } else if (x % 3 === 0) {
+        ctx.fillStyle = '#bde0fe';
+        ctx.fillRect(X + 3, Y + 2, 10, 8);
+      }
+    } else if (c === '=') {                       // wall
+      ctx.fillStyle = '#8d99ae';
+      ctx.fillRect(X, Y, TILE, TILE);
+      ctx.fillStyle = '#6c757d';
+      ctx.fillRect(X, Y + 7, TILE, 1);
+      ctx.fillRect(X + (y % 2 ? 4 : 11), Y, 1, 7);
+    } else if (c === 'h' || c === 'O') {          // hedge
+      ctx.fillStyle = '#2d6a4f';
+      ctx.fillRect(X, Y, TILE, TILE);
+      ctx.fillStyle = '#40916c';
+      ctx.fillRect(X + 2, Y + 3, 3, 3);
+      ctx.fillRect(X + 9, Y + 8, 3, 3);
+      if (c === 'O') {                            // the hole
+        ctx.fillStyle = '#1b1b1b';
+        ctx.fillRect(X + 4, Y + 9, 8, 7);
+      }
+    } else if (c === 'B') {                       // bike shed
+      ctx.fillStyle = '#577590';
+      ctx.fillRect(X, Y, TILE, TILE);
+      ctx.fillStyle = '#212529';
+      ctx.fillRect(X + 3, Y + 9, 4, 4);
+      ctx.fillRect(X + 10, Y + 9, 4, 4);
+    } else if (c === 'n') {                       // bench
+      ctx.fillStyle = '#9c6644';
+      ctx.fillRect(X, Y + 5, TILE, 6);
+    } else if (c === 'X') {                       // bin
+      ctx.fillStyle = '#2b9348';
+      ctx.fillRect(X + 3, Y + 2, 10, 13);
+      ctx.fillStyle = '#1b4332';
+      ctx.fillRect(X + 2, Y + 1, 12, 2);
+    } else if (c === 'T') {                       // tree
+      ctx.fillStyle = '#6b4226';
+      ctx.fillRect(X + 6, Y + 6, 4, 10);
+      ctx.fillStyle = '#2d6a4f';
+      ctx.fillRect(X - 3, Y - 12, 22, 18);
+      ctx.fillStyle = '#40916c';
+      ctx.fillRect(X, Y - 9, 8, 6);
+    } else if (c === 'b') {                       // bush
+      drawBush(X, Y);
+    } else if (c === 'x' && !has('football')) {
+      ctx.fillStyle = shine() ? '#ffffff' : '#e9ecef';
+      ctx.fillRect(X + 5, Y + 5, 7, 7);
+      ctx.fillStyle = '#212529';
+      ctx.fillRect(X + 7, Y + 7, 3, 3);
+    } else if (c === 'G') {                       // main entrance gate
+      ctx.fillStyle = '#495057';
+      for (let i = 1; i < 16; i += 3) ctx.fillRect(X + i, Y, 1, TILE);
+      ctx.fillRect(X, Y + 2, TILE, 1);
+      ctx.fillRect(X, Y + 13, TILE, 1);
+    }
+    // the ways out have a sign until you find them
+    const route = this.spots[c];
+    if (route) drawBubble(ctx, X + 4, Y - 6, game.routes.has(route) ? 'note' : '!', game.routes.has(route) ? '#80ed99' : '#ffd166');
+    // OUT OF BOUNDS: red stripes
+    if (this.outOfBounds.includes(c)) {
+      ctx.fillStyle = 'rgba(230, 57, 70, 0.35)';
+      for (let d = 0; d < TILE; d++) {
+        ctx.fillRect(X + d, Y + d, 1, 1);
+        ctx.fillRect(X + d, Y + ((d + 8) % TILE), 1, 1);
+      }
+    }
+  },
+
+  // Students stand in the playground. If you hide in a bush, the bush covers you.
+  drawSeated(x, y, look) {
+    drawPerson(ctx, tileX(x) + 2, tileY(y) + 1, look, false);
+    if (tileAt(x, y) === 'b') drawBush(tileX(x), tileY(y) + 5);
+  },
+
+  drawWatcher(L) {
+    const W = L.watcher;
+    const X = tileX(W.dx), Y = tileY(W.dy);
+    drawPerson(ctx, X + 2, Y + 1, WHISTLE_LOOK, false);
+    ctx.fillStyle = '#dee2e6';                  // her whistle
+    ctx.fillRect(X + 7, Y + 9, 2, 2);
+    if (W.sus > 0) drawBubble(ctx, X + 10, Y - 8, '?', '#ffd166');
+    else watcherBubble(W, X + 10, Y - 8);
+  },
+};
+
+function drawBush(X, Y) {
+  ctx.fillStyle = '#2b9348';
+  ctx.fillRect(X + 1, Y + 4, 14, 11);
+  ctx.fillStyle = '#55a630';
+  ctx.fillRect(X + 3, Y + 6, 3, 3);
+  ctx.fillRect(X + 9, Y + 9, 3, 3);
+}
 
 // ---------- small drawing helpers ----------
 function shine() { return Math.floor(performance.now() / 300) % 2 === 0; }

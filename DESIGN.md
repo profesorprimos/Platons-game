@@ -87,7 +87,7 @@ Items help you escape. Some are normal school things. Some are funny things you 
 |---|---|---|
 | School bus | The driver watches you in the big mirror | Sunglasses |
 | Classroom 1 | The door squeaks | Special quiet shoes, or an oil can |
-| Break time | A tall fence | Ladder |
+| Break time | A high wall | Ladder |
 | Classroom 2 | Teachers stop you in the corridor | Hall pass |
 | Canteen | The duty teacher guards the exit | Whoopee cushion |
 | Classroom 3 | The window is too high | Helicopter hat |
@@ -134,9 +134,24 @@ A maths lesson with **Mr Grumble**. He uses his computer a lot.
 - **Funny items:** the ✨ **magic equation** multiplies your sweets by 2 every morning (up to 10). **Cardboard you** sits in your place at the end of a level, so you don't need to be hiding (works once).
 - You keep the things you find. If you get caught, the teacher takes one back and it goes back where you found it.
 
+## Level 3: break time (built!)
+
+Break time is for **exploring** and **making your escape plan**.
+
+- The playground is **bigger than the screen**. The view moves with you.
+- You can **walk anywhere** in the playground. The **striped areas are OUT OF BOUNDS**. If Ms Whistle sees you there, you are caught. You can hide in **bushes**.
+- **Ms Whistle** (PE teacher, teacher on duty) **walks around** the playground. She only sees the area **around her** (the light circle).
+- **Ms Whistle's habits:** Monday referees football, Tuesday chases seagulls, Wednesday eats lunch on the bench, Thursday times running laps, Friday on her phone.
+- **3 ways out.** When you find one, it goes in your **escape plan** (press B) with the things you need:
+  - 🚪 **The main entrance**: 🎫 hall pass + 🔢 gate code
+  - 🧱 **Over the high wall** (jump from the top): 🪜 ladder
+  - 🕳️ **The hole under the hedge**: 🪣 toy spade (to dig it bigger)
+- **Swap chain:** find the ⚽ football in the bushes → swap it for a 📚 comic → swap the comic for the 🔢 gate code. The little kid in the sandpit swaps the 🪣 toy spade for a sweet.
+- **Break is short (50 seconds)**, so you can't explore everything in one day.
+
 ## How to win (so far)
 
-Get the 🔑 **bike key** on the bus **and** the 🎫 🪜 💨 from the classroom, within the 10 days. You don't need the key to go to the classroom.
+Get the 🔑 **bike key** on the bus, find at least **one way out** at break time, and have **everything that way needs**, within the 10 days. Then your escape plan is ready. (The great escape itself comes later.)
 
 ### Character powers
 
@@ -149,5 +164,5 @@ Get the 🔑 **bike key** on the bus **and** the 🎫 🪜 💨 from the classro
 
 ## Still to decide
 
-- The problem in each place, and which item solves it
-- What the ladder and hall pass do
+- The great escape: how you actually leave school and get to your bike
+- The other levels: 2nd lesson, lunch in the canteen, 3rd lesson, car park

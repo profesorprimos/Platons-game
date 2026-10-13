@@ -40,6 +40,8 @@ body {
   box-shadow: 4px 4px 0 #0005;
 }
 .hud .gap { margin-left: 12px; }
+.noise-box { display: contents; }
+.noise-box[hidden] { display: none; }
 .goal { display: flex; gap: 4px; font-size: 18px; }
 .goal span { opacity: 0.3; filter: grayscale(1); }
 .goal span.got { opacity: 1; filter: none; }

@@ -12,6 +12,8 @@ Open `index.html` in a web browser. You do not need to install anything.
 
 **Level 2: the classroom.** Maths with Mr Grumble. Find the hall pass, the ladder and the whoopee cushion, and be at a desk when the bell rings.
 
+**Level 3: break time.** Explore the playground and find the 3 secret ways out. Stay out of the striped areas when Ms Whistle is near!
+
 | Key | What it does |
 |-----|--------------|
 | Arrow keys or W A S D | Move |
@@ -26,8 +28,8 @@ Open `index.html` in a web browser. You do not need to install anything.
 
 | File | What is inside |
 |------|----------------|
-| `js/data.js` | **Start here!** Characters, items, secrets, what the students say, and the maps of the bus and the classroom. You can change the words here. |
-| `js/levels.js` | The rules and drawings for each level (bus, classroom). Add new levels here. |
+| `js/data.js` | **Start here!** Characters, items, secrets, what the students say, and the maps of the bus, the classroom and the playground. You can change the words here. |
+| `js/levels.js` | The rules and drawings for each level (bus, classroom, break time). Add new levels here. |
 | `js/sprites.js` | The pixel art for the people |
 | `js/game.js` | The game engine: moving, hiding, talking, getting caught |
 | `style.css` | Colours and layout of the page |

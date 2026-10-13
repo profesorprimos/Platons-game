@@ -7,6 +7,7 @@
 const DAYS = 10;                // school days until the assembly
 const RIDE_SECONDS = 75;        // how long the bus ride takes
 const LESSON_SECONDS = 90;      // how long the maths lesson takes
+const BREAK_SECONDS = 50;       // how long break time takes (too short to explore everything in one day!)
 const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 // ---------- Characters you can pick ----------
@@ -44,6 +45,10 @@ const ITEMS = {
   ladder:        { name: 'Folding ladder', icon: '🪜', text: 'For climbing over fences. (Useful later!)' },
   whoopeeCushion:{ name: 'Whoopee cushion',icon: '💨', text: 'Makes a VERY rude noise. Everybody looks at it. (Useful later!)' },
   magicEquation: { name: 'Magic equation', icon: '✨', text: 'Every morning it multiplies your sweets by 2! (Up to 10 sweets.)' },
+  football:      { name: 'Football',       icon: '⚽', text: 'Somebody kicked it into the garden. Somebody wants it back!' },
+  comic:         { name: 'Comic',          icon: '📚', text: '"Super Teacher", issue 12. Somebody would LOVE to read it.' },
+  gateCode:      { name: 'Gate code',      icon: '🔢', text: 'The secret code for the main entrance gate.' },
+  toySpade:      { name: 'Toy spade',      icon: '🪣', text: 'A little plastic spade from the sandpit. Good for digging!' },
   cardboardYou:  { name: 'Cardboard you',  icon: '🧍', text: 'A cardboard copy of you. At the end of a level it sits in your place, so you don\'t need to be hiding. Works once.' },
 };
 
@@ -327,4 +332,191 @@ const CLASS_LINES = [
   'Mr Grumble said "x" again. Who is x?',
   'My calculator ran away.',
   'Shh! I\'m pretending to work.',
+];
+
+// ============================================================
+//  LEVEL 3: BREAK TIME (the playground, with Ms Whistle)
+// ============================================================
+
+const DUTY_TEACHER = 'Ms Whistle';
+
+// The playground is bigger than the screen. The view moves with you.
+// #  school building   D  school door   =  wall   h  hedge
+// .  playground        g  grass         p  football pitch   k  basketball court
+// q  sandpit           n  bench         T  tree   X  bins   B  bike shed
+// OUT OF BOUNDS (Ms Whistle catches you here!):
+// :  path to the main entrance   ,  garden / behind things   b  bush (you can hide in it)
+// Ways out:  G  main entrance gate   Y  the high wall   O  hole under the hedge
+// Things to find:  x  football (in the bushes)
+// s  student   P  you   Capital letters are helpful students (see BREAK_STUDENTS).
+const BREAK_MAP = [
+  '########################D###########',
+  '=::::::.........................XX.=',
+  'G::::::.s.....s.......s.P....R.....=',
+  '=::::::............................=',
+  '=......ppppppppppMpppp.T.kkkkkkkk..=',
+  '=BBBB..pppppsppppppppp...kkskkkkk..=',
+  '=,,,,..ppspppppppppppp...kkkkkskk..=',
+  '=,,,,..pppppppFppppppp...kkkkkkkk..=',
+  '=......ppppppppppppspp.........,,,,=',
+  '=......ppppppppppppppp...s.....,,,,=',
+  '=..qqKq........................,,b,=',
+  '=..qqqq...nn........H...T......,,,Y=',
+  '=..qqqq..W.C..............E....,b,,=',
+  '=..s............s....s.....X...,,,,=',
+  '=gggggggggggggggggggggggggggggggggg=',
+  '=,,,,b,,,,,b,,,,,,,b,,,,,,,b,,,b,,,=',
+  '=,,,,,,,b,,,,,,b,,,,,,,b,,,,,,,,,,,=',
+  '=,,,,,,,,,,,,x,,,,,,,,,,,,,,,,,,,,,=',
+  '=hhhhhhhhhhhhhhhhhhhhhOhhhhhhhhhhhh=',
+];
+
+// The 3 secret ways out of school. Find them at break time to make your escape plan.
+const ESCAPE_ROUTES = {
+  gate: {
+    icon: '🚪', name: 'The main entrance',
+    needs: ['hallPass', 'gateCode'],
+    text: 'The main entrance gate. It has a code lock, and the office can see it. With a hall pass and the gate code, you could just walk out!',
+  },
+  wall: {
+    icon: '🧱', name: 'Over the high wall',
+    needs: ['ladder'],
+    text: 'A high wall at the side of the playground. Much too high to jump… unless you climb up a ladder first!',
+  },
+  hedge: {
+    icon: '🕳️', name: 'The hole under the hedge',
+    needs: ['toySpade'],
+    text: 'A small hole under the hedge. It is too small for you now. If you dig it bigger, you could crawl through!',
+  },
+};
+
+// Ms Whistle's habits. While a habit happens, she stands still and does NOT watch.
+Object.assign(SECRETS, {
+  breakMonday: {
+    level: 'break', day: 'Monday', habit: 'referee', window: [0.20, 0.45], at: { x: 14, y: 6 },
+    text: 'On Mondays Ms Whistle referees the football match. She only watches the ball.',
+  },
+  breakTuesday: {
+    level: 'break', day: 'Tuesday', habit: 'seagulls', window: [0.50, 0.65], at: { x: 27, y: 12 },
+    text: 'On Tuesdays Ms Whistle chases the seagulls away from the bins in the middle of break.',
+  },
+  breakWednesday: {
+    level: 'break', day: 'Wednesday', habit: 'lunch', window: [0.35, 0.55], at: { x: 10, y: 10 },
+    text: 'On Wednesdays Ms Whistle eats her lunch early, on the bench by the sandpit.',
+  },
+  breakThursday: {
+    level: 'break', day: 'Thursday', habit: 'stopwatch', window: [0.60, 0.80], at: { x: 7, y: 9 },
+    text: 'On Thursdays Ms Whistle times Year 7 running laps. Her eyes are on her stopwatch.',
+  },
+  breakFriday: {
+    level: 'break', day: 'Friday', habit: 'phone', window: [0.10, 0.30], at: { x: 20, y: 2 },
+    text: 'On Fridays Ms Whistle talks on her phone at the start of break.',
+  },
+});
+
+// What Ms Whistle is doing
+const DUTY_STATUS = {
+  patrol:    'Walking around the playground',
+  referee:   'Refereeing the football match ⚽',
+  seagulls:  'Chasing seagulls away from the bins 🐦',
+  lunch:     'Eating her lunch on the bench 🥪',
+  stopwatch: 'Timing Year 7 running laps ⏱️',
+  phone:     'Talking on her phone 📱',
+  laughing:  'Laughing at your joke 😂',
+};
+
+const BREAK_STUDENTS = {
+  F: {
+    name: 'Football kid',
+    look: { hair: '#6b3e1f', skin: '#c68642', shirt: '#e63946', pants: '#f8f9fa' },
+    hello: ['Oh no! Somebody kicked our football into the garden at the bottom. It\'s OUT OF BOUNDS!'],
+    trade: {
+      want: 'football', wantCount: 1, give: 'comic',
+      ask: 'Can you get it back for us? I will give you my best comic!',
+      notEnough: 'The ball is in the bushes at the bottom of the playground. Watch out for Ms Whistle!',
+      yes: 'YES! Our ball! Here, take my comic.',
+      no: 'Okay… we will just play with a sock then.',
+      after: 'Thanks for the ball! Want to play? No? Okay.',
+    },
+  },
+  C: {
+    name: 'Bored kid',
+    look: { hair: '#1b1b1b', skin: '#8d5524', shirt: '#8338ec', pants: '#343a40' },
+    hello: ['Sooo bored. My mum works in the school office, so I know ALL the secrets.'],
+    trade: {
+      want: 'comic', wantCount: 1, give: 'gateCode',
+      ask: 'I know the code for the main entrance gate. I will tell you… for a new comic. Deal?',
+      notEnough: 'No comic, no code. The football kids have good comics…',
+      yes: 'Ooh, Super Teacher! The code is 1-2-3-4. Don\'t tell anyone!',
+      no: 'Fine. I will stay bored.',
+      after: 'Shh! I never told you the code.',
+    },
+  },
+  K: {
+    name: 'Little kid',
+    look: { hair: '#e9c46a', skin: '#ffdbac', shirt: '#80ed99', pants: '#3a86ff' },
+    hello: ['This is MY sandpit. And this is MY spade.'],
+    trade: {
+      want: 'sweets', wantCount: 1, give: 'toySpade',
+      ask: 'You want my spade? Give me a sweet and it\'s yours!',
+      yes: 'Yummy! Bye-bye, spade!',
+      no: 'Then go away. I am building a castle.',
+      after: 'I am building a castle with my hands now. It is fine.',
+    },
+  },
+  M: {
+    name: 'Football player',
+    look: { hair: '#3d3d3d', skin: '#f1c27d', shirt: '#118ab2', pants: '#f8f9fa' },
+    hello: ['Ms Whistle loves football more than anything.'],
+    secret: 'breakMonday',
+    secretLine: 'On Mondays she referees our match. She only watches the ball, not the garden!',
+    again: 'Monday. Football. She only watches the ball.',
+  },
+  E: {
+    name: 'Bird watcher',
+    look: { hair: '#a0522d', skin: '#e0ac69', shirt: '#ffd166', pants: '#264653' },
+    hello: ['I love seagulls. Ms Whistle HATES seagulls.'],
+    secret: 'breakTuesday',
+    secretLine: 'On Tuesdays they come to the bins in the middle of break, and she runs after them!',
+    again: 'Tuesday. Seagulls. Bins. Chaos.',
+  },
+  W: {
+    name: 'Hungry kid',
+    look: { hair: '#b56576', skin: '#c68642', shirt: '#fb5607', pants: '#3a0ca3' },
+    hello: ['Ms Whistle eats her lunch at break on Wednesdays. On the bench, right here.'],
+    secret: 'breakWednesday',
+    secretLine: 'She eats SO slowly. She doesn\'t look up from her sandwich for ages.',
+    again: 'Wednesday. Bench. Slow sandwich.',
+    gift: {
+      item: 'sweets', count: 1,
+      text: 'I have too many sweets. Here, have one. (You get 1 sweet.)',
+    },
+  },
+  H: {
+    name: 'Runner',
+    look: { hair: '#2b2d42', skin: '#8d5524', shirt: '#06d6a0', pants: '#212529' },
+    hello: ['I\'m in Year 7. On Thursdays we have to run laps at break. Why?!'],
+    secret: 'breakThursday',
+    secretLine: 'Ms Whistle stares at her stopwatch near the end of break. She doesn\'t see anything else.',
+    again: 'Thursday. Stopwatch. End of break.',
+  },
+  R: {
+    name: 'Phone spotter',
+    look: { hair: '#e9c46a', skin: '#f1c27d', shirt: '#ef476f', pants: '#1d3557' },
+    hello: ['On Fridays Ms Whistle is ALWAYS on her phone at the start of break.'],
+    secret: 'breakFriday',
+    secretLine: 'I think she is ordering pizza. Every Friday!',
+    again: 'Friday. Phone. Start of break.',
+  },
+};
+
+const BREAK_LINES = [
+  'Break is the best part of the day. Apart from going home.',
+  'Don\'t go in the garden. Ms Whistle has eyes in the back of her head.',
+  'I heard there is a hole under the hedge. Just a rumour…',
+  'PHWEEET! Sorry. I was practising my Ms Whistle impression.',
+  'Do you want to play tag? You\'re it!',
+  'Break is SO short. You can\'t see everything in one day.',
+  'The wall on the side is SO high. You would need a ladder.',
+  'I am not running. Ms Whistle says no running. I am walking very fast.',
 ];
