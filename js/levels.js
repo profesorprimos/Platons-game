@@ -8,7 +8,7 @@
 // ============================================================
 
 // The order of the school day. Add new levels here when they are built.
-const LEVEL_ORDER = ['bus', 'classroom', 'break'];
+const LEVEL_ORDER = ['bus', 'classroom', 'break', 'lab'];
 
 const LEVELS = {};
 
@@ -454,7 +454,7 @@ LEVELS.break = {
   spots: { G: 'gate', Y: 'wall', O: 'hedge' },
   goals: [],
   goalList() {
-    return Object.entries(ESCAPE_ROUTES).map(([id, r]) => ({ icon: r.icon, got: game.routes.has(id), title: r.name }));
+    return routeGoals('break');
   },
   status: DUTY_STATUS,
   idleStates: ['patrol'],
@@ -466,20 +466,7 @@ LEVELS.break = {
   vision() { return 4 + game.alert * 0.5; },           // how far she can see
   spotTime() { return Math.max(0.35, 0.8 - game.alert * 0.08); },
 
-  // Turn the corners of her route into a list of steps
-  patrolPath() {
-    const path = [];
-    WHISTLE_ROUTE.forEach((a, i) => {
-      const b = WHISTLE_ROUTE[(i + 1) % WHISTLE_ROUTE.length];
-      let { x, y } = a;
-      while (x !== b.x || y !== b.y) {
-        path.push({ x, y });
-        x += Math.sign(b.x - x);
-        y += Math.sign(b.y - y);
-      }
-    });
-    return path;
-  },
+  patrolPath() { return routeSteps(WHISTLE_ROUTE); },
   place(W) {
     const habit = todayHabit('break');
     if (W.state === 'patrol') Object.assign(W, W.path[W.pathI]);
@@ -487,9 +474,9 @@ LEVELS.break = {
   },
 
   intro() {
-    const found = game.routes.size;
+    const found = [...game.routes].filter((id) => ESCAPE_ROUTES[id].level === 'break').length;
     if (found) {
-      return [{ who: '', text: `Break time! You know ${found} of 3 ways out. Explore, swap and get what you need. Be back in bounds when the bell rings!` }];
+      return [{ who: '', text: `Break time! You know ${found} of 3 ways out here. Explore, swap and get what you need. Be back in bounds when the bell rings!` }];
     }
     return [
       { who: '', text: '🔔 Break time! Fifteen minutes of freedom. Well… almost.' },
@@ -512,7 +499,7 @@ LEVELS.break = {
   finish() {
     openDialog([
       { who: '', text: '🔔 RIIIING! Break is over.' },
-      { who: '', text: `Ways out in your escape plan: ${game.routes.size} of 3. (Press B to see your plan.)` },
+      { who: '', text: `Ways out in your escape plan: ${game.routes.size}. (Press B to see your plan.)` },
     ], nextLevel);
   },
 
@@ -638,6 +625,220 @@ LEVELS.break = {
     else watcherBubble(W, X + 10, Y - 8);
   },
 };
+
+// ------------------------------------------------------------
+//  LEVEL 4: SCIENCE
+//  Professor Fizz never sits down. She walks around the lab and
+//  only sees what is IN FRONT of her. Sneak behind her back!
+// ------------------------------------------------------------
+const FIZZ_LOOK = { hair: '#f8f9fa', skin: '#ffdbac', shirt: '#f8f9fa', pants: '#6c757d', glasses: true };
+const UP = { x: 0, y: -1 }, LEFT = { x: -1, y: 0 }, RIGHT = { x: 1, y: 0 };
+// Her walk around the lab. "wait" = she stops there for a few seconds, looking that way.
+const FIZZ_ROUTE = [
+  { x: 1, y: 1 },
+  { x: 8, y: 1, wait: 3, face: UP },        // at her bench, back to the class
+  { x: 16, y: 1 },
+  { x: 16, y: 4, wait: 1.5, face: LEFT },   // looking along the back of the lab
+  { x: 1, y: 4, wait: 1.5, face: RIGHT },
+];
+
+LEVELS.lab = {
+  title: `Science with ${SCIENCE_TEACHER}`,
+  map: SCIENCE_MAP,
+  students: SCIENCE_STUDENTS,
+  lines: SCIENCE_LINES,
+  seconds: SCIENCE_SECONDS,
+  barIcons: ['🧪', '🏠'],
+  who: SCIENCE_TEACHER,
+  Who: SCIENCE_TEACHER,
+  shoutName: SCIENCE_TEACHER,
+  anonymous: true,
+  mode: 'patrol',       // she walks around all the time
+  walk: '.ocbV',
+  hide: 'o',
+  pickups: { c: 'smokePotion', b: 'batteries' },
+  spots: { V: 'window' },
+  goals: SCIENCE_GOALS,
+  goalList() {
+    return [
+      ...SCIENCE_GOALS.map((i) => ({ icon: ITEMS[i].icon, got: has(i), title: ITEMS[i].name })),
+      ...routeGoals('lab'),
+    ];
+  },
+  status: SCIENCE_STATUS,
+  idleStates: ['patrol'],
+  patrol: false,
+
+  pickIdle() { return 'patrol'; },
+  idleTime() { return this.stepTime(); },
+  stepTime() { return Math.max(0.3, 0.5 - game.alert * 0.04); },
+  spotTime() { return Math.max(0.3, 0.6 - game.alert * 0.06); },
+  patrolPath() { return routeSteps(FIZZ_ROUTE); },
+
+  // She only sees what is in front of her: a cone of light
+  canSee(W, p) {
+    const dx = p.x - W.x, dy = p.y - W.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist === 0) return true;
+    if (dist > 4.5 + game.alert * 0.5) return false;
+    const dir = W.dir || UP;
+    return (dx * dir.x + dy * dir.y) / dist >= 0.6;
+  },
+
+  place(W) {
+    const habit = todayHabit('lab');
+    W.gone = W.state === 'frog';
+    if (W.state === 'patrol') Object.assign(W, W.path[W.pathI]);
+    else if (habit && W.state === habit.habit) Object.assign(W, habit.at);
+  },
+
+  intro(firstDay) {
+    const found = SCIENCE_GOALS.filter(has).length;
+    if (!firstDay || found) {
+      return [{ who: '', text: `Find the things you still need (${found} of 2 found), and be on a stool when the bell rings!` }];
+    }
+    return [
+      { who: SCIENCE_TEACHER, text: 'Welcome to SCIENCE! Today we are making things go fizz. And maybe BOOM.' },
+      { who: '', text: 'Professor Fizz never sits down. She walks around the lab all lesson. But she only sees what is <b>in front of her</b> (the light). Move behind her back!' },
+      { who: '', text: 'Find:<br>🔋 the <b>batteries</b>, in the supply box at the back<br>🧪 the <b>smoke potion</b>, on the chemicals shelf at the front<br>…and maybe another way out!' },
+      { who: '', text: 'Hide on an <b>empty stool</b>. Don\'t make noise: she turns around! Be on a stool when the bell rings!' },
+    ];
+  },
+  pickupText: {
+    batteries: '🔋 You got the batteries! Now the helicopter hat can really fly.',
+    smokePotion: '🧪 You got the smoke potion! Press U to use it.',
+  },
+  sunglassesText: '🕶️ Professor Fizz sees you… but thinks you are a famous scientist!',
+  seenText: 'Professor Fizz turns around and sees you!',
+  lateText: 'The bell rings, and you are not on a stool!',
+  shout: 'Aha! A wandering student! SIT. DOWN.',
+  caughtLines: [
+    'You have to wash the test tubes until home time. All 200 of them.',
+  ],
+
+  finish() {
+    openDialog([{ who: '', text: '🔔 RIIIING! Home time!' }], nextLevel);
+  },
+
+  // ---------- drawing ----------
+  drawBackground(L) { LEVELS.classroom.drawBackground(L); },
+
+  drawTile(x, y, c, L) {
+    const X = tileX(x), Y = tileY(y), h = L.tiles.length;
+    if (c === '#') {
+      ctx.fillStyle = '#caf0f8';
+      ctx.fillRect(X, Y, TILE, TILE);
+      if (y === 0 && x >= 6 && x <= 11) {          // Professor Fizz's bench with test tubes
+        ctx.fillStyle = '#495057';
+        ctx.fillRect(X, Y + 9, TILE, 7);
+        const tubes = ['#06d6a0', '#ef476f', '#ffd166', '#118ab2'];
+        ctx.fillStyle = tubes[x % 4];
+        ctx.fillRect(X + 4, Y + 3, 2, 6);
+        ctx.fillRect(X + 10, Y + 5, 2, 4);
+      } else if (y === 0) {                          // shelves of jars
+        ctx.fillStyle = '#9c6644';
+        ctx.fillRect(X, Y + 10, TILE, 2);
+        ctx.fillStyle = ['#80ed99', '#f4a261', '#a2d2ff'][x % 3];
+        ctx.fillRect(X + 3, Y + 5, 4, 5);
+      } else if (y === h - 1 && x >= 2) {            // windows (the last one is open!)
+        ctx.fillStyle = x === 16 ? '#ffffff' : '#bde0fe';
+        ctx.fillRect(X + 1, Y + 3, 14, 9);
+      }
+      return;
+    }
+    // white floor tiles
+    ctx.fillStyle = (x + y) % 2 ? '#e9ecef' : '#dee2e6';
+    ctx.fillRect(X, Y, TILE, TILE);
+    if (c === 'L') {                                // lab bench
+      ctx.fillStyle = '#343a40';
+      ctx.fillRect(X, Y + 2, TILE, 12);
+      ctx.fillStyle = '#495057';
+      ctx.fillRect(X, Y + 2, TILE, 3);
+      if (x % 2) {                                  // a gas tap and a beaker
+        ctx.fillStyle = '#adb5bd';
+        ctx.fillRect(X + 6, Y + 6, 2, 4);
+        ctx.fillStyle = '#4cc9f0';
+        ctx.fillRect(X + 10, Y + 7, 3, 4);
+      }
+    } else if (c === 'o') {                         // stool
+      ctx.fillStyle = '#6c757d';
+      ctx.fillRect(X + 4, Y + 9, 8, 3);
+      ctx.fillRect(X + 7, Y + 12, 2, 4);
+    } else if (c === 'c') {                         // chemicals shelf
+      ctx.fillStyle = '#9c6644';
+      ctx.fillRect(X + 1, Y + 1, 14, 4);
+      if (!has('smokePotion')) {
+        ctx.fillStyle = shine() ? '#b5e48c' : '#52b788';
+        ctx.fillRect(X + 5, Y + 5, 6, 7);
+        ctx.fillRect(X + 7, Y + 2, 2, 3);
+      }
+    } else if (c === 'b') {                         // supply box
+      ctx.fillStyle = '#c9a66b';
+      ctx.fillRect(X + 1, Y + 6, 14, 10);
+      if (!has('batteries')) {
+        ctx.fillStyle = shine() ? '#ffe066' : '#fcbf49';
+        ctx.fillRect(X + 3, Y + 2, 4, 8);
+        ctx.fillRect(X + 9, Y + 2, 4, 8);
+        ctx.fillStyle = '#212529';
+        ctx.fillRect(X + 3, Y + 2, 4, 2);
+        ctx.fillRect(X + 9, Y + 2, 4, 2);
+      }
+    }
+    const route = this.spots[c];
+    if (route) drawBubble(ctx, X + 4, Y - 2, game.routes.has(route) ? 'note' : '!', game.routes.has(route) ? '#80ed99' : '#ffd166');
+  },
+
+  drawSeated(x, y, look) {
+    drawPerson(ctx, tileX(x) + 2, tileY(y) + 1, look, true);
+  },
+
+  drawWatcher(L) {
+    const W = L.watcher;
+    if (W.gone) return;
+    const X = tileX(W.dx), Y = tileY(W.dy);
+    const back = W.dir && W.dir.y < 0;              // walking away from us, or facing her bench
+    const hairUp = W.state === 'hair';
+    drawPerson(ctx, X + 2, Y + 1, { ...FIZZ_LOOK, back, hair: hairUp ? '#ffd166' : FIZZ_LOOK.hair }, false);
+    if (hairUp) {                                   // electric hair!
+      ctx.fillStyle = '#ffd166';
+      for (let i = 0; i < 4; i++) ctx.fillRect(X + 4 + i * 2, Y - 3 - (i % 2) * 2, 1, 4);
+    }
+    if (W.sus > 0) drawBubble(ctx, X + 10, Y - 8, '?', '#ffd166');
+    else watcherBubble(W, X + 10, Y - 8);
+  },
+
+  drawOver(L) {
+    if (L.watcher.state !== 'boom') return;         // smoke from the explosion
+    ctx.fillStyle = 'rgba(173, 181, 189, 0.6)';
+    ctx.fillRect(OX, OY, L.tiles[0].length * TILE, L.tiles.length * TILE);
+  },
+};
+
+// The ways out found in a level, for the "Find" icons at the top
+function routeGoals(levelId) {
+  return Object.entries(ESCAPE_ROUTES)
+    .filter(([, r]) => r.level === levelId)
+    .map(([id, r]) => ({ icon: r.icon, got: game.routes.has(id), title: r.name }));
+}
+
+// Turn the corners of a teacher's walk into a list of steps.
+// A corner can say "wait" (seconds) and "face" (which way to look while waiting).
+function routeSteps(corners) {
+  const path = [];
+  corners.forEach((a, i) => {
+    const b = corners[(i + 1) % corners.length];
+    let { x, y } = a;
+    path.push({ ...a });
+    x += Math.sign(b.x - x);
+    y += Math.sign(b.y - y);
+    while (x !== b.x || y !== b.y) {
+      path.push({ x, y });
+      x += Math.sign(b.x - x);
+      y += Math.sign(b.y - y);
+    }
+  });
+  return path;
+}
 
 function drawBush(X, Y) {
   ctx.fillStyle = '#2b9348';

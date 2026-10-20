@@ -149,9 +149,22 @@ Break time is for **exploring** and **making your escape plan**.
 - **Swap chain:** find the ⚽ football in the bushes → swap it for a 📚 comic → swap the comic for the 🔢 gate code. The little kid in the sandpit swaps the 🪣 toy spade for a sweet.
 - **Break is short (50 seconds)**, so you can't explore everything in one day.
 
+## Level 4: science (built!)
+
+A science lesson with **Professor Fizz**, after break and before home time.
+
+- **Professor Fizz never sits down.** She walks around the lab all lesson. She only sees what is **in front of her** (a cone of light), so you move **behind her back**.
+- She **stops** at her bench (back to the class) and at the back of the lab (looking along it).
+- If you make a **loud noise**, she **turns around** to look at you.
+- **Hiding:** on any **empty stool**. Be on a stool when the bell rings.
+- **Find:** 🔋 **batteries** (supply box at the back) and the 🧪 **smoke potion** (chemicals shelf at the front).
+- 🧪 **Smoke potion:** press **U**. POOF! Nobody can see you for 6 seconds. Works once (you can find a new one another day).
+- **A 4th way out:** 🪟 **fly out of the lab window**. You need the 🚁 helicopter hat and the 🔋 batteries. A student in the lab also swaps a helicopter hat for 2 sweets.
+- **Professor Fizz's habits:** Monday her experiment goes BOOM (smoke), Tuesday Gerald the frog escapes, Wednesday steamed-up goggles, Thursday electric hair, Friday a volcano.
+
 ## How to win (so far)
 
-Get the 🔑 **bike key** on the bus, find at least **one way out** at break time, and have **everything that way needs**, within the 10 days. Then your escape plan is ready. (The great escape itself comes later.)
+Get the 🔑 **bike key** on the bus, find at least **one way out** (at break time or in the science lab), and have **everything that way needs**, within the 10 days. Then your escape plan is ready. (The great escape itself comes later.)
 
 ### Character powers
 
@@ -165,4 +178,4 @@ Get the 🔑 **bike key** on the bus, find at least **one way out** at break tim
 ## Still to decide
 
 - The great escape: how you actually leave school and get to your bike
-- The other levels: 2nd lesson, lunch in the canteen, 3rd lesson, car park
+- The other levels: lunch in the canteen, car park

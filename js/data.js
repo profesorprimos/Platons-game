@@ -7,6 +7,7 @@
 const DAYS = 10;                // school days until the assembly
 const RIDE_SECONDS = 75;        // how long the bus ride takes
 const LESSON_SECONDS = 90;      // how long the maths lesson takes
+const SCIENCE_SECONDS = 90;     // how long the science lesson takes
 const BREAK_SECONDS = 50;       // how long break time takes (too short to explore everything in one day!)
 const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -39,7 +40,7 @@ const ITEMS = {
   sweets:        { name: 'Sweets',         icon: '🍬', text: 'Swap them with other students.' },
   sunglasses:    { name: 'Sunglasses',     icon: '🕶️', text: 'If someone sees you, they think you are somebody important. Works once in each level.' },
   quietShoes:    { name: 'Quiet shoes',    icon: '👟', text: 'Your steps make half as much noise.' },
-  helicopterHat: { name: 'Helicopter hat', icon: '🚁', text: 'Lets you fly! (But not inside a bus.)' },
+  helicopterHat: { name: 'Helicopter hat', icon: '🚁', text: 'Lets you fly! But it needs batteries. (And not inside a bus.)' },
   bikeKey:       { name: 'Bike key',       icon: '🔑', text: 'The key for your bike in the car park.' },
   hallPass:      { name: 'Hall pass',      icon: '🎫', text: 'Lets you walk in the corridor. (Useful later!)' },
   ladder:        { name: 'Folding ladder', icon: '🪜', text: 'For climbing over fences. (Useful later!)' },
@@ -49,6 +50,8 @@ const ITEMS = {
   comic:         { name: 'Comic',          icon: '📚', text: '"Super Teacher", issue 12. Somebody would LOVE to read it.' },
   gateCode:      { name: 'Gate code',      icon: '🔢', text: 'The secret code for the main entrance gate.' },
   toySpade:      { name: 'Toy spade',      icon: '🪣', text: 'A little plastic spade from the sandpit. Good for digging!' },
+  batteries:     { name: 'Batteries',      icon: '🔋', text: 'Put them in the helicopter hat and it REALLY flies!' },
+  smokePotion:   { name: 'Smoke potion',   icon: '🧪', text: 'Press U: POOF! A big cloud of smoke. Nobody can see you for a few seconds. Works once.' },
   cardboardYou:  { name: 'Cardboard you',  icon: '🧍', text: 'A cardboard copy of you. At the end of a level it sits in your place, so you don\'t need to be hiding. Works once.' },
 };
 
@@ -374,17 +377,17 @@ const BREAK_MAP = [
 // The 3 secret ways out of school. Find them at break time to make your escape plan.
 const ESCAPE_ROUTES = {
   gate: {
-    icon: '🚪', name: 'The main entrance',
+    level: 'break', icon: '🚪', name: 'The main entrance',
     needs: ['hallPass', 'gateCode'],
     text: 'The main entrance gate. It has a code lock, and the office can see it. With a hall pass and the gate code, you could just walk out!',
   },
   wall: {
-    icon: '🧱', name: 'Over the high wall',
+    level: 'break', icon: '🧱', name: 'Over the high wall',
     needs: ['ladder'],
     text: 'A high wall at the side of the playground. Much too high to jump… unless you climb up a ladder first!',
   },
   hedge: {
-    icon: '🕳️', name: 'The hole under the hedge',
+    level: 'break', icon: '🕳️', name: 'The hole under the hedge',
     needs: ['toySpade'],
     text: 'A small hole under the hedge. It is too small for you now. If you dig it bigger, you could crawl through!',
   },
@@ -519,4 +522,134 @@ const BREAK_LINES = [
   'Break is SO short. You can\'t see everything in one day.',
   'The wall on the side is SO high. You would need a ladder.',
   'I am not running. Ms Whistle says no running. I am walking very fast.',
+];
+
+// ============================================================
+//  LEVEL 4: SCIENCE (the lab, with Professor Fizz)
+// ============================================================
+
+const SCIENCE_TEACHER = 'Professor Fizz';
+
+// #  wall          .  floor        L  lab bench
+// o  empty stool (you can hide here)    s  student    P  you
+// c  smoke potion (on the chemicals shelf)   b  batteries (in the supply box)
+// V  the big open window (a way out!)
+// Capital letters are helpful students (see SCIENCE_STUDENTS).
+// The front of the lab (Professor Fizz's bench) is at the TOP.
+const SCIENCE_MAP = [
+  '##################',
+  '#..............c.#',
+  '#.sLLo.oLLM.TLLo.#',
+  '#.oLLs.sLLP.JLLs.#',
+  '#................#',
+  '#bsLLo.KLLH.oLLsV#',
+  '##################',
+];
+
+const SCIENCE_GOALS = ['batteries', 'smokePotion'];
+
+// A 4th way out, found in the science lab
+ESCAPE_ROUTES.window = {
+  level: 'lab', icon: '🪟', name: 'Fly out of the lab window',
+  needs: ['helicopterHat', 'batteries'],
+  text: 'The big window at the back of the lab is open. From up here you could FLY all the way to the car park… with a helicopter hat that really works!',
+};
+
+// Professor Fizz's habits. While a habit happens, she does NOT see anything.
+Object.assign(SECRETS, {
+  labMonday: {
+    level: 'lab', day: 'Monday', habit: 'boom', window: [0.30, 0.45], at: { x: 8, y: 1 },
+    text: 'On Mondays Professor Fizz\'s experiment goes BOOM in the middle of the lesson. Smoke everywhere!',
+  },
+  labTuesday: {
+    level: 'lab', day: 'Tuesday', habit: 'frog', window: [0.50, 0.62], at: { x: 16, y: 1 },
+    text: 'On Tuesdays Gerald the class frog escapes, and Professor Fizz chases him out of the lab.',
+  },
+  labWednesday: {
+    level: 'lab', day: 'Wednesday', habit: 'goggles', window: [0.20, 0.35], at: { x: 4, y: 1 },
+    text: 'On Wednesdays Professor Fizz\'s goggles steam up at the start of the lesson. She can\'t see a thing!',
+  },
+  labThursday: {
+    level: 'lab', day: 'Thursday', habit: 'hair', window: [0.62, 0.78], at: { x: 12, y: 1 },
+    text: 'On Thursdays Professor Fizz does the static electricity experiment near the end. Her hair stands up and she stares in the mirror.',
+  },
+  labFriday: {
+    level: 'lab', day: 'Friday', habit: 'volcano', window: [0.10, 0.28], at: { x: 8, y: 1 },
+    text: 'On Fridays Professor Fizz builds a volcano at the start of the lesson. She only watches the lava.',
+  },
+});
+
+// What Professor Fizz is doing
+const SCIENCE_STATUS = {
+  patrol:   'Walking around the lab',
+  boom:     'BOOM! Her experiment exploded 💥',
+  frog:     'Chasing Gerald the frog out of the room 🐸',
+  goggles:  'Wiping her steamed-up goggles 🥽',
+  hair:     'Staring at her electric hair in the mirror ⚡',
+  volcano:  'Watching her volcano erupt 🌋',
+  laughing: 'Laughing at your joke 😂',
+};
+
+const SCIENCE_STUDENTS = {
+  M: {
+    name: 'Lab partner',
+    look: { hair: '#3d3d3d', skin: '#c68642', shirt: '#4361ee', pants: '#212529', glasses: true },
+    hello: ['Professor Fizz LOVES explosions. A bit too much.'],
+    secret: 'labMonday',
+    secretLine: 'On Mondays her experiment always goes BOOM in the middle of the lesson. Smoke everywhere!',
+    again: 'Monday. BOOM. Middle of the lesson.',
+  },
+  T: {
+    name: 'Frog fan',
+    look: { hair: '#2a9d8f', skin: '#f1c27d', shirt: '#80ed99', pants: '#1d3557' },
+    hello: ['Have you met Gerald? He is the class frog. He is VERY good at escaping. Like you!'],
+    secret: 'labTuesday',
+    secretLine: 'On Tuesdays Gerald jumps out of his tank, and Professor Fizz chases him out of the room!',
+    again: 'Tuesday. Gerald. Run!',
+  },
+  J: {
+    name: 'Sleepy scientist',
+    look: { hair: '#6b3e1f', skin: '#8d5524', shirt: '#ffb703', pants: '#343a40' },
+    hello: ['Science is great. Science at 1 o\'clock is not.'],
+    secret: 'labWednesday',
+    secretLine: 'On Wednesdays her goggles steam up at the start. She walks into the door every time!',
+    again: 'Wednesday. Steamy goggles. Start of the lesson.',
+    gift: {
+      item: 'sweets', count: 1,
+      text: 'I made this sweet in the lab. It is probably safe. (You get 1 sweet.)',
+    },
+  },
+  H: {
+    name: 'Electric kid',
+    look: { hair: '#ffd166', skin: '#ffdbac', shirt: '#7209b7', pants: '#3a0ca3' },
+    hello: ['Zap! I love the static electricity experiment.'],
+    secret: 'labThursday',
+    secretLine: 'On Thursdays, near the end, her hair stands straight up. She stares at it in the mirror for AGES.',
+    again: 'Thursday. Electric hair. End of the lesson.',
+  },
+  K: {
+    name: 'Volcano fan',
+    look: { hair: '#d62828', skin: '#e0ac69', shirt: '#f77f00', pants: '#003049' },
+    hello: ['On Fridays she builds a volcano at the start of the lesson. She only watches the lava!'],
+    secret: 'labFriday',
+    secretLine: 'And look: my cousin gave me a helicopter hat, but it is too big for me.',
+    trade: {
+      want: 'sweets', wantCount: 2, give: 'helicopterHat',
+      ask: 'Do you want my helicopter hat? 2 sweets and it\'s yours.',
+      yes: 'It needs batteries to fly. There are some in the supply box at the back!',
+      no: 'Okay. I will use it as a fruit bowl.',
+      after: 'Did you find batteries for the hat yet?',
+    },
+  },
+};
+
+const SCIENCE_LINES = [
+  'I mixed blue and yellow and got… brown?',
+  'Professor Fizz never sits down. NEVER.',
+  'Don\'t touch the green bottle. Or do. I\'m not your mum.',
+  'Is it home time yet?',
+  'My eyebrows were longer before this lesson.',
+  'She can\'t see behind her. Everybody knows that.',
+  'I am doing an experiment. It is called sleeping.',
+  'Gerald the frog is my best friend.',
 ];

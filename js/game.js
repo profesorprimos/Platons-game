@@ -30,6 +30,7 @@ function keyName(e) {
     case 'n': case 'N': return 'no';
     case 'b': case 'B': return 'bag';
     case 'h': case 'H': return 'help';
+    case 'u': case 'U': return 'use';
   }
   return null;
 }
@@ -177,6 +178,7 @@ function helpHtml() {
       <div><span class="keys"><kbd>E</kbd></span> Talk to a student</div>
       <div><span class="keys"><kbd>B</kbd></span> Your bag and notebook</div>
       ${isChar('funny') ? '<div><span class="keys"><kbd>J</kbd></span> Tell a joke</div>' : ''}
+      <div><span class="keys"><kbd>U</kbd></span> Use the smoke potion (if you have it)</div>
       <div><span class="keys"><kbd>H</kbd></span> See this help again</div>
     </div>
     <p>🪑 Sit in a seat or at an empty desk to hide.</p>
@@ -339,7 +341,7 @@ function makeLevel(id) {
     time: 0, scroll: 0, noise: 0, over: false,
     watcher: { state: 'idle', timer: 0, x: 0, y: 0, dx: 0, dy: 0, gone: false, path: null, pathI: 0, sus: 0 },
     camX: 0, camY: 0,
-    sunglassesUsed: false, jokeUsed: false, jokeTimer: 0,
+    sunglassesUsed: false, jokeUsed: false, jokeTimer: 0, smokeTimer: 0,
     pickedToday: [],
     bannerTimer: 0,
   };
@@ -481,6 +483,7 @@ function updateLevel(dt) {
 
   if (took('action') && performance.now() - dialogClosedAt > 400) { tryTalk(); if (dialog) return; }
   if (took('joke')) tryJoke();
+  if (took('use')) useSmokePotion();
   if (took('bag')) { openBag(); return; }
   if (took('help')) { showHelp(hideScreen); return; }
 
@@ -580,7 +583,10 @@ function updateWatcher(dt) {
   const habit = todayHabit(L.id);
   const progress = L.time / def.seconds;
   let busy = null;
-  if (L.jokeTimer > 0) {
+  if (L.smokeTimer > 0) {
+    L.smokeTimer -= dt;
+    busy = 'smoke';
+  } else if (L.jokeTimer > 0) {
     L.jokeTimer -= dt;
     busy = 'laughing';
   } else if (habit && habit.window && progress >= habit.window[0] && progress < habit.window[1]) {
@@ -589,7 +595,7 @@ function updateWatcher(dt) {
   if (busy) {
     if (W.state !== busy) {
       setWatcher(L, busy);
-      banner(`${def.Who}: ${def.status[busy]}`);
+      banner(`${def.Who}: ${def.status[busy] || 'Lost in a cloud of smoke 💨'}`);
     }
     return;
   }
@@ -642,9 +648,23 @@ function updatePatrol(dt) {
   const L = level, W = L.watcher, def = L.def;
   W.timer -= dt;
   if (W.timer <= 0) {
+    const from = { x: W.x, y: W.y };
     W.pathI = (W.pathI + 1) % W.path.length;
-    Object.assign(W, W.path[W.pathI]);
-    W.timer = def.stepTime();
+    const step = W.path[W.pathI];
+    W.x = step.x;
+    W.y = step.y;
+    // which way she is looking: where she walks, or where she stops to look
+    if (step.face) W.dir = step.face;
+    else if (step.x !== from.x || step.y !== from.y) W.dir = { x: Math.sign(step.x - from.x), y: Math.sign(step.y - from.y) };
+    W.timer = step.wait || def.stepTime();
+  }
+  // a loud noise makes her turn around to look at you
+  if (!def.noNoise && L.noise >= 70) {
+    const P = L.player, dx = P.x - W.x, dy = P.y - W.y;
+    W.dir = Math.abs(dx) > Math.abs(dy) ? { x: Math.sign(dx), y: 0 } : { x: 0, y: Math.sign(dy) || 1 };
+    W.timer = Math.max(W.timer, 1.5);
+    L.noise = 40;
+    banner(`${def.Who} heard a noise and turns around! 👂`);
   }
   if (!isSafe() && canSee(playerTile())) {
     W.sus += dt;
@@ -654,9 +674,23 @@ function updatePatrol(dt) {
   }
 }
 
+// Can the watcher see this tile? Some see all around them (a circle), some only in front (a cone).
 function canSee(p) {
-  const W = level.watcher;
-  return Math.hypot(p.x - W.x, p.y - W.y) <= level.def.vision();
+  const W = level.watcher, def = level.def;
+  if (def.canSee) return def.canSee(W, p);
+  return Math.hypot(p.x - W.x, p.y - W.y) <= def.vision();
+}
+
+// The smoke potion: nobody can see anything for a few seconds
+function useSmokePotion() {
+  const L = level;
+  if (!has('smokePotion')) {
+    banner('You have nothing to use. (The smoke potion is in the science lab.)');
+    return;
+  }
+  removeItem('smokePotion');
+  L.smokeTimer = 6;
+  banner('🧪 You open the smoke potion. POOF! Nobody can see anything!');
 }
 
 // While walking around, the teacher sees everything 2 steps around him
@@ -898,12 +932,14 @@ function draw() {
     }
   }
 
-  // Ms Whistle's view: the light circle around her
+  // What a walking teacher can see: a circle (Ms Whistle) or a cone in front (Professor Fizz)
   if (def.mode === 'patrol' && W.state === 'patrol') {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         if (!canSee({ x, y }) || !def.walk.includes(L.tiles[y][x])) continue;
-        ctx.fillStyle = def.outOfBounds.includes(L.tiles[y][x]) ? 'rgba(230,57,70,0.3)' : 'rgba(255,255,255,0.18)';
+        const c = L.tiles[y][x];
+        const danger = def.outOfBounds ? def.outOfBounds.includes(c) && !def.hide.includes(c) : !def.hide.includes(c);
+        ctx.fillStyle = danger ? 'rgba(230,57,70,0.3)' : 'rgba(255,255,255,0.18)';
         ctx.fillRect(tileX(x), tileY(y), TILE, TILE);
       }
     }
@@ -952,6 +988,10 @@ function draw() {
 
   def.drawWatcher(L);
   if (def.drawOver) def.drawOver(L);
+  if (L.smokeTimer > 0) {                          // the smoke potion cloud
+    ctx.fillStyle = `rgba(222, 226, 230, ${Math.min(0.75, L.smokeTimer / 4)})`;
+    ctx.fillRect(0, 0, 320, 180);
+  }
 }
 
 // Where a tile is on the screen. Big levels scroll with the camera.
