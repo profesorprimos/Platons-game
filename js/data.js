@@ -36,22 +36,24 @@ const CHARACTERS = [
 ];
 
 // ---------- Items ----------
+// "from" says which stage of the school day you can get it in
 const ITEMS = {
   sweets:        { name: 'Sweets',         icon: '🍬', text: 'Swap them with other students.' },
   sunglasses:    { name: 'Sunglasses',     icon: '🕶️', text: 'If someone sees you, they think you are somebody important. Works once in each level.' },
   quietShoes:    { name: 'Quiet shoes',    icon: '👟', text: 'Your steps make half as much noise.' },
-  helicopterHat: { name: 'Helicopter hat', icon: '🚁', text: 'Lets you fly! But it needs batteries. (And not inside a bus.)' },
-  bikeKey:       { name: 'Bike key',       icon: '🔑', text: 'The key for your bike in the car park.' },
-  hallPass:      { name: 'Hall pass',      icon: '🎫', text: 'Lets you walk in the corridor. (Useful later!)' },
-  ladder:        { name: 'Folding ladder', icon: '🪜', text: 'For climbing over fences. (Useful later!)' },
-  whoopeeCushion:{ name: 'Whoopee cushion',icon: '💨', text: 'Makes a VERY rude noise. Everybody looks at it. (Useful later!)' },
+  helicopterHat: { name: 'Helicopter hat', icon: '🚁', from: '🚌 bus or 🧪 science', text: 'Lets you fly down from the high wall! But it needs batteries.' },
+  bikeKey:       { name: 'Bike key',       icon: '🔑', from: '🚌 bus', text: 'The key for your bike in the car park. You need it for every escape!' },
+  hallPass:      { name: 'Hall pass',      icon: '🎫', from: '📐 maths', text: 'Show it at the main entrance, and the office lets you walk past.' },
+  ladder:        { name: 'Folding ladder', icon: '🪜', from: '📐 maths', text: 'For climbing up the high wall.' },
+  whoopeeCushion:{ name: 'Whoopee cushion',icon: '💨', from: '📐 maths', text: 'Makes a VERY rude noise. Everybody looks at it, and nobody hears you digging.' },
   magicEquation: { name: 'Magic equation', icon: '✨', text: 'Every morning it multiplies your sweets by 2! (Up to 10 sweets.)' },
   football:      { name: 'Football',       icon: '⚽', text: 'Somebody kicked it into the garden. Somebody wants it back!' },
   comic:         { name: 'Comic',          icon: '📚', text: '"Super Teacher", issue 12. Somebody would LOVE to read it.' },
-  gateCode:      { name: 'Gate code',      icon: '🔢', text: 'The secret code for the main entrance gate.' },
-  toySpade:      { name: 'Toy spade',      icon: '🪣', text: 'A little plastic spade from the sandpit. Good for digging!' },
-  batteries:     { name: 'Batteries',      icon: '🔋', text: 'Put them in the helicopter hat and it REALLY flies!' },
-  smokePotion:   { name: 'Smoke potion',   icon: '🧪', text: 'Press U: POOF! A big cloud of smoke. Nobody can see you for a few seconds. Works once.' },
+  gateCode:      { name: 'Gate code',      icon: '🔢', from: '🍎 break', text: 'The secret code for the main entrance gate.' },
+  toySpade:      { name: 'Toy spade',      icon: '🪣', from: '🍎 break', text: 'A little plastic spade from the sandpit. For digging the hole under the hedge bigger!' },
+  batteries:     { name: 'Batteries',      icon: '🔋', from: '🧪 science', text: 'Put them in the helicopter hat and it REALLY flies!' },
+  smokePotion:   { name: 'Smoke potion',   icon: '🧪', from: '🧪 science', text: 'For the main entrance: the office can\'t see you in the smoke. (Or press U to use it now: nobody can see you for a few seconds. Works once.)' },
+  goggles:       { name: 'Safety goggles', icon: '🥽', from: '🧪 science', text: 'For digging under the hedge. Professor Fizz says: safety first, even when escaping!' },
   cardboardYou:  { name: 'Cardboard you',  icon: '🧍', text: 'A cardboard copy of you. At the end of a level it sits in your place, so you don\'t need to be hiding. Works once.' },
 };
 
@@ -378,18 +380,18 @@ const BREAK_MAP = [
 const ESCAPE_ROUTES = {
   gate: {
     level: 'break', icon: '🚪', name: 'The main entrance',
-    needs: ['hallPass', 'gateCode'],
-    text: 'The main entrance gate. It has a code lock, and the office can see it. With a hall pass and the gate code, you could just walk out!',
+    needs: ['hallPass', 'gateCode', 'smokePotion'],
+    text: 'The main entrance gate. It has a code lock, and the office lady watches it. Show a hall pass, type the code, and make some smoke so she can\'t see you leave!',
   },
   wall: {
     level: 'break', icon: '🧱', name: 'Over the high wall',
-    needs: ['ladder'],
-    text: 'A high wall at the side of the playground. Much too high to jump… unless you climb up a ladder first!',
+    needs: ['ladder', 'helicopterHat', 'batteries'],
+    text: 'A high wall at the side of the playground. Climb up with a ladder, then fly down the other side with a helicopter hat that really works!',
   },
   hedge: {
     level: 'break', icon: '🕳️', name: 'The hole under the hedge',
-    needs: ['toySpade'],
-    text: 'A small hole under the hedge. It is too small for you now. If you dig it bigger, you could crawl through!',
+    needs: ['toySpade', 'whoopeeCushion', 'goggles'],
+    text: 'A small hole under the hedge. Dig it bigger with a spade. Digging is noisy, so a whoopee cushion makes everybody look the other way. And dirt flies everywhere: wear goggles!',
   },
 };
 
@@ -533,7 +535,7 @@ const SCIENCE_TEACHER = 'Professor Fizz';
 // #  wall          .  floor        L  lab bench
 // o  empty stool (you can hide here)    s  student    P  you
 // c  smoke potion (on the chemicals shelf)   b  batteries (in the supply box)
-// V  the big open window (a way out!)
+// y  safety goggles (on the hook)
 // Capital letters are helpful students (see SCIENCE_STUDENTS).
 // The front of the lab (Professor Fizz's bench) is at the TOP.
 const SCIENCE_MAP = [
@@ -542,18 +544,12 @@ const SCIENCE_MAP = [
   '#.sLLo.oLLM.TLLo.#',
   '#.oLLs.sLLP.JLLs.#',
   '#................#',
-  '#bsLLo.KLLH.oLLsV#',
+  '#bsLLoyKLLH.oLLs.#',
   '##################',
 ];
 
-const SCIENCE_GOALS = ['batteries', 'smokePotion'];
-
-// A 4th way out, found in the science lab
-ESCAPE_ROUTES.window = {
-  level: 'lab', icon: '🪟', name: 'Fly out of the lab window',
-  needs: ['helicopterHat', 'batteries'],
-  text: 'The big window at the back of the lab is open. From up here you could FLY all the way to the car park… with a helicopter hat that really works!',
-};
+// The 3 things to find in the science lab
+const SCIENCE_GOALS = ['smokePotion', 'batteries', 'goggles'];
 
 // Professor Fizz's habits. While a habit happens, she does NOT see anything.
 Object.assign(SECRETS, {

@@ -407,7 +407,7 @@ function nextLevel() {
   else if (!route) {
     for (const id of game.routes) {
       const r = ESCAPE_ROUTES[id];
-      lines.push(`${r.icon} ${r.name}: you still need ${itemList(r.needs.filter((i) => !has(i)))}.`);
+      lines.push(`${r.icon} ${r.name}: you still need ${r.needs.filter((i) => !has(i)).map((i) => `${ITEMS[i].icon} ${ITEMS[i].name.toLowerCase()} <small>(${ITEMS[i].from})</small>`).join(', ')}.`);
     }
   }
   lines.push('Try again tomorrow. You keep everything you found!');
@@ -421,6 +421,11 @@ function readyRoute() {
 
 function itemList(items) {
   return items.map((i) => `${ITEMS[i].icon} ${ITEMS[i].name.toLowerCase()}`).join(', ');
+}
+
+// One thing a way out needs: ✅ or ❌, and which stage of the day it comes from
+function needLine(i) {
+  return `${has(i) ? '✅' : '❌'} ${ITEMS[i].icon} ${ITEMS[i].name.toLowerCase()}${ITEMS[i].from ? ` <small>(${ITEMS[i].from})</small>` : ''}`;
 }
 
 const tileAt = (x, y) => (level.tiles[y] && level.tiles[y][x]) || '#';
@@ -545,7 +550,7 @@ function afterStep() {
 // You reached a way out: add it to your escape plan
 function findRoute(id) {
   const r = ESCAPE_ROUTES[id];
-  const needs = r.needs.map((i) => `${has(i) ? '✅' : '❌'} ${ITEMS[i].icon} ${ITEMS[i].name.toLowerCase()}`).join('<br>');
+  const needs = r.needs.map(needLine).join('<br>');
   if (game.routes.has(id)) {
     banner(`${r.icon} ${r.name}: you need ${itemList(r.needs)}.`);
     return;
@@ -760,10 +765,10 @@ function openBag() {
       ? items.map((i) => `<li><span class="icon">${ITEMS[i].icon}</span><span><b>${ITEMS[i].name}${game.items[i] > 1 ? ` ×${game.items[i]}` : ''}</b> · ${ITEMS[i].text}</span></li>`).join('')
       : '<li>Nothing yet.</li>'}</ul>
     <h2>Escape plan</h2>
-    <ul class="list">${game.routes.size
+    <ul class="list"><li><span class="icon">🚲</span><span><b>Your getaway</b> · ${needLine('bikeKey')}</span></li>${game.routes.size
       ? [...game.routes].map((id) => {
         const r = ESCAPE_ROUTES[id];
-        const needs = r.needs.map((i) => `${has(i) ? '✅' : '❌'} ${ITEMS[i].icon} ${ITEMS[i].name.toLowerCase()}`).join(' &nbsp; ');
+        const needs = r.needs.map(needLine).join(' &nbsp; ');
         return `<li><span class="icon">${r.icon}</span><span><b>${r.name}</b> · ${needs}</span></li>`;
       }).join('')
       : '<li>No plan yet. Find the ways out at break time!</li>'}</ul>

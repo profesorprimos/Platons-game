@@ -499,7 +499,7 @@ LEVELS.break = {
   finish() {
     openDialog([
       { who: '', text: '🔔 RIIIING! Break is over.' },
-      { who: '', text: `Ways out in your escape plan: ${game.routes.size}. (Press B to see your plan.)` },
+      { who: '', text: `Ways out in your escape plan: ${game.routes.size} of 3. (Press B to see your plan.)` },
     ], nextLevel);
   },
 
@@ -654,17 +654,10 @@ LEVELS.lab = {
   shoutName: SCIENCE_TEACHER,
   anonymous: true,
   mode: 'patrol',       // she walks around all the time
-  walk: '.ocbV',
+  walk: '.ocby',
   hide: 'o',
-  pickups: { c: 'smokePotion', b: 'batteries' },
-  spots: { V: 'window' },
+  pickups: { c: 'smokePotion', b: 'batteries', y: 'goggles' },
   goals: SCIENCE_GOALS,
-  goalList() {
-    return [
-      ...SCIENCE_GOALS.map((i) => ({ icon: ITEMS[i].icon, got: has(i), title: ITEMS[i].name })),
-      ...routeGoals('lab'),
-    ];
-  },
   status: SCIENCE_STATUS,
   idleStates: ['patrol'],
   patrol: false,
@@ -695,18 +688,19 @@ LEVELS.lab = {
   intro(firstDay) {
     const found = SCIENCE_GOALS.filter(has).length;
     if (!firstDay || found) {
-      return [{ who: '', text: `Find the things you still need (${found} of 2 found), and be on a stool when the bell rings!` }];
+      return [{ who: '', text: `Find the things you still need (${found} of 3 found), and be on a stool when the bell rings!` }];
     }
     return [
       { who: SCIENCE_TEACHER, text: 'Welcome to SCIENCE! Today we are making things go fizz. And maybe BOOM.' },
       { who: '', text: 'Professor Fizz never sits down. She walks around the lab all lesson. But she only sees what is <b>in front of her</b> (the light). Move behind her back!' },
-      { who: '', text: 'Find:<br>🔋 the <b>batteries</b>, in the supply box at the back<br>🧪 the <b>smoke potion</b>, on the chemicals shelf at the front<br>…and maybe another way out!' },
+      { who: '', text: 'Find 3 things for your escape:<br>🧪 the <b>smoke potion</b>, on the chemicals shelf at the front<br>🔋 the <b>batteries</b>, in the supply box at the back<br>🥽 the <b>safety goggles</b>, on the hook at the back' },
       { who: '', text: 'Hide on an <b>empty stool</b>. Don\'t make noise: she turns around! Be on a stool when the bell rings!' },
     ];
   },
   pickupText: {
     batteries: '🔋 You got the batteries! Now the helicopter hat can really fly.',
-    smokePotion: '🧪 You got the smoke potion! Press U to use it.',
+    smokePotion: '🧪 You got the smoke potion! Keep it for the main entrance… or press U to use it now.',
+    goggles: '🥽 You got the safety goggles! Safety first!',
   },
   sunglassesText: '🕶️ Professor Fizz sees you… but thinks you are a famous scientist!',
   seenText: 'Professor Fizz turns around and sees you!',
@@ -740,8 +734,8 @@ LEVELS.lab = {
         ctx.fillRect(X, Y + 10, TILE, 2);
         ctx.fillStyle = ['#80ed99', '#f4a261', '#a2d2ff'][x % 3];
         ctx.fillRect(X + 3, Y + 5, 4, 5);
-      } else if (y === h - 1 && x >= 2) {            // windows (the last one is open!)
-        ctx.fillStyle = x === 16 ? '#ffffff' : '#bde0fe';
+      } else if (y === h - 1 && x >= 2) {            // windows
+        ctx.fillStyle = '#bde0fe';
         ctx.fillRect(X + 1, Y + 3, 14, 9);
       }
       return;
@@ -783,9 +777,19 @@ LEVELS.lab = {
         ctx.fillRect(X + 3, Y + 2, 4, 2);
         ctx.fillRect(X + 9, Y + 2, 4, 2);
       }
+    } else if (c === 'y') {                         // hook with the safety goggles
+      ctx.fillStyle = '#6c757d';
+      ctx.fillRect(X + 7, Y, 2, 4);
+      if (!has('goggles')) {
+        ctx.fillStyle = shine() ? '#90e0ef' : '#48cae4';
+        ctx.fillRect(X + 3, Y + 4, 4, 4);
+        ctx.fillRect(X + 9, Y + 4, 4, 4);
+        ctx.fillStyle = '#212529';
+        ctx.fillRect(X + 7, Y + 5, 2, 1);
+        ctx.fillRect(X + 2, Y + 5, 1, 1);
+        ctx.fillRect(X + 13, Y + 5, 1, 1);
+      }
     }
-    const route = this.spots[c];
-    if (route) drawBubble(ctx, X + 4, Y - 2, game.routes.has(route) ? 'note' : '!', game.routes.has(route) ? '#80ed99' : '#ffd166');
   },
 
   drawSeated(x, y, look) {

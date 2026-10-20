@@ -81,19 +81,28 @@ Items help you escape. Some are normal school things. Some are funny things you 
 | Special quiet shoes | Walk without making noise. |
 | Sweets | Swap them with other students for items. |
 
-### Problems and the items that solve them (first ideas)
+## The escape plan: every stage has a job
 
-| Place | Problem | Item that helps |
+The school day has **4 stages**. Each stage gives you a different part of your escape plan:
+
+| Stage | Its job in the plan | What you get there |
 |---|---|---|
-| School bus | The driver watches you in the big mirror | Sunglasses |
-| Classroom 1 | The door squeaks | Special quiet shoes, or an oil can |
-| Break time | A high wall | Ladder |
-| Classroom 2 | Teachers stop you in the corridor | Hall pass |
-| Canteen | The duty teacher guards the exit | Whoopee cushion |
-| Classroom 3 | The window is too high | Helicopter hat |
-| Car park | Your bike is locked | Bike key |
+| 🚌 **Bus** | **The getaway** | 🔑 bike key (needed for every escape), 🚁 helicopter hat |
+| 📐 **Maths** | **The tools** | 🎫 hall pass, 🪜 folding ladder, 💨 whoopee cushion |
+| 🍎 **Break** | **The ways out** | find the 3 ways out, 🔢 gate code, 🪣 toy spade |
+| 🧪 **Science** | **Getting away unseen** | 🧪 smoke potion, 🔋 batteries, 🥽 safety goggles |
 
-Each item should solve a **particular problem** in the game. We took out the scissors and the machete. We will add new items when we know what problems each place has.
+There are **3 ways out**. Each one needs things from **different stages**:
+
+| Way out | 📐 Maths | 🍎 Break | 🧪 Science | 🚌 Bus |
+|---|---|---|---|---|
+| 🚪 **The main entrance**: show a hall pass, type the code, and make smoke so the office can't see you leave | 🎫 hall pass | 🔢 gate code | 🧪 smoke potion | |
+| 🧱 **Over the high wall**: climb up with a ladder, fly down the other side | 🪜 ladder | | 🔋 batteries | 🚁 helicopter hat |
+| 🕳️ **The hole under the hedge**: dig it bigger, make a rude noise so nobody hears, and wear goggles | 💨 whoopee cushion | 🪣 toy spade | 🥽 safety goggles | |
+
+Every escape also needs your 🔑 **bike key** from the bus.
+
+The game shows which stage each item comes from (in the escape plan, press B).
 
 ## Secrets
 
@@ -142,10 +151,7 @@ Break time is for **exploring** and **making your escape plan**.
 - You can **walk anywhere** in the playground. The **striped areas are OUT OF BOUNDS**. If Ms Whistle sees you there, you are caught. You can hide in **bushes**.
 - **Ms Whistle** (PE teacher, teacher on duty) **walks around** the playground. She only sees the area **around her** (the light circle).
 - **Ms Whistle's habits:** Monday referees football, Tuesday chases seagulls, Wednesday eats lunch on the bench, Thursday times running laps, Friday on her phone.
-- **3 ways out.** When you find one, it goes in your **escape plan** (press B) with the things you need:
-  - 🚪 **The main entrance**: 🎫 hall pass + 🔢 gate code
-  - 🧱 **Over the high wall** (jump from the top): 🪜 ladder
-  - 🕳️ **The hole under the hedge**: 🪣 toy spade (to dig it bigger)
+- **3 ways out.** When you find one, it goes in your **escape plan** (press B) with the things you need. (See *The escape plan* above.)
 - **Swap chain:** find the ⚽ football in the bushes → swap it for a 📚 comic → swap the comic for the 🔢 gate code. The little kid in the sandpit swaps the 🪣 toy spade for a sweet.
 - **Break is short (50 seconds)**, so you can't explore everything in one day.
 
@@ -157,14 +163,14 @@ A science lesson with **Professor Fizz**, after break and before home time.
 - She **stops** at her bench (back to the class) and at the back of the lab (looking along it).
 - If you make a **loud noise**, she **turns around** to look at you.
 - **Hiding:** on any **empty stool**. Be on a stool when the bell rings.
-- **Find:** 🔋 **batteries** (supply box at the back) and the 🧪 **smoke potion** (chemicals shelf at the front).
-- 🧪 **Smoke potion:** press **U**. POOF! Nobody can see you for 6 seconds. Works once (you can find a new one another day).
-- **A 4th way out:** 🪟 **fly out of the lab window**. You need the 🚁 helicopter hat and the 🔋 batteries. A student in the lab also swaps a helicopter hat for 2 sweets.
+- **Find 3 things:** 🧪 the **smoke potion** (chemicals shelf at the front), 🔋 the **batteries** (supply box at the back) and 🥽 the **safety goggles** (hook at the back).
+- 🧪 **Smoke potion:** you need it for the main entrance. You can also press **U** to use it now (nobody can see you for 6 seconds), but then it is gone until you find another one.
+- A student in the lab swaps a 🚁 helicopter hat for 2 sweets (if you didn't get one on the bus).
 - **Professor Fizz's habits:** Monday her experiment goes BOOM (smoke), Tuesday Gerald the frog escapes, Wednesday steamed-up goggles, Thursday electric hair, Friday a volcano.
 
 ## How to win (so far)
 
-Get the 🔑 **bike key** on the bus, find at least **one way out** (at break time or in the science lab), and have **everything that way needs**, within the 10 days. Then your escape plan is ready. (The great escape itself comes later.)
+Get the 🔑 **bike key** on the bus, find at least **one way out** at break time, and have **everything that way needs**, within the 10 days. Then your escape plan is ready. (The great escape itself comes later.)
 
 ### Character powers
 
