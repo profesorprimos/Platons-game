@@ -600,7 +600,7 @@ LEVELS.break = {
     const route = this.spots[c];
     if (route) drawBubble(ctx, X + 4, Y - 6, game.routes.has(route) ? 'note' : '!', game.routes.has(route) ? '#80ed99' : '#ffd166');
     // OUT OF BOUNDS: red stripes
-    if (this.outOfBounds.includes(c)) {
+    if (this.outOfBounds && this.outOfBounds.includes(c)) {
       ctx.fillStyle = 'rgba(230, 57, 70, 0.35)';
       for (let d = 0; d < TILE; d++) {
         ctx.fillRect(X + d, Y + d, 1, 1);
@@ -632,7 +632,7 @@ LEVELS.break = {
 //  only sees what is IN FRONT of her. Sneak behind her back!
 // ------------------------------------------------------------
 const FIZZ_LOOK = { hair: '#f8f9fa', skin: '#ffdbac', shirt: '#f8f9fa', pants: '#6c757d', glasses: true };
-const UP = { x: 0, y: -1 }, LEFT = { x: -1, y: 0 }, RIGHT = { x: 1, y: 0 };
+const UP = { x: 0, y: -1 }, DOWN = { x: 0, y: 1 }, LEFT = { x: -1, y: 0 }, RIGHT = { x: 1, y: 0 };
 // Her walk around the lab. "wait" = she stops there for a few seconds, looking that way.
 const FIZZ_ROUTE = [
   { x: 1, y: 1 },
@@ -816,6 +816,139 @@ LEVELS.lab = {
     ctx.fillRect(OX, OY, L.tiles[0].length * TILE, L.tiles.length * TILE);
   },
 };
+
+// ------------------------------------------------------------
+//  THE GREAT ESCAPE (final level)
+//  Everybody is inside for assembly practice. Three teachers search
+//  the playground. Get to your way out and follow your plan!
+// ------------------------------------------------------------
+LEVELS.escape = {
+  title: 'The Great Escape',
+  map: ESCAPE_MAP,
+  students: {},
+  lines: [''],
+  seconds: ESCAPE_SECONDS,
+  barIcons: ['🏃', '🎤'],
+  who: 'the teacher',
+  Who: 'The teacher',
+  shoutName: 'Teachers',
+  camera: true,
+  mode: 'patrol',
+  noNoise: true,
+  floor: '.',
+  walk: '.:,gpkqbGYO',
+  hide: 'b',              // only the bushes hide you: ANY teacher who sees you outside catches you
+  pickups: {},
+  spots: { G: 'gate', Y: 'wall', O: 'hedge' },
+  goals: [],
+  goalList() {
+    return Object.entries(ESCAPE_ROUTES).map(([, r]) => ({ icon: r.icon, got: r.needs.every(has), title: r.name }));
+  },
+  status: {},
+  idleStates: ['patrol'],
+  patrol: false,
+  pickIdle() { return 'patrol'; },
+  idleTime() { return 0.4; },
+  spotTime() { return Math.max(0.3, 0.6 - game.alert * 0.05); },
+
+  // The search party: each teacher walks their own route and sees in their own way
+  squad: [
+    {
+      name: TEACHER_NAME, look: TEACHER_LOOK, step: 0.55, range: 3.5,
+      route: [{ x: 2, y: 4 }, { x: 2, y: 12 }, { x: 8, y: 12 }, { x: 8, y: 4 }],
+    },
+    {
+      name: DUTY_TEACHER, look: WHISTLE_LOOK, step: 0.42, range: 4,
+      route: WHISTLE_ROUTE,
+    },
+    {
+      name: SCIENCE_TEACHER, look: FIZZ_LOOK, step: 0.4, range: 5, cone: true,
+      route: [{ x: 4, y: 15, wait: 1.5, face: RIGHT }, { x: 32, y: 15 }, { x: 32, y: 9, wait: 2, face: DOWN }, { x: 32, y: 15 }],
+    },
+  ],
+
+  intro() {
+    return [
+      { who: '', text: 'Everybody is inside for assembly practice. But the teachers know that SOMEBODY wants to escape…' },
+      { who: '', text: 'Mr Grumble, Ms Whistle and Professor Fizz are outside, looking for you. If <b>any</b> teacher sees you, you are caught! Hide in the <b>bushes</b>.' },
+      { who: '', text: 'Go to your way out (the signs). Then use your things <b>in the right order</b>. Follow your plan! (Press B to see it.)' },
+    ];
+  },
+  sunglassesText: '🕶️ A teacher sees you… but thinks you are a visiting school inspector!',
+  lateText: 'Assembly practice is over, and the teachers find you outside!',
+  shout: 'GOTCHA! Straight to assembly practice!',
+  caughtLines: ['You have to practise the school song. All 14 verses.'],
+  onCaught() {
+    endDay('Caught!', ['Your escape plan is still in your notebook. Try the great escape again tomorrow!']);
+  },
+
+  // You reached a way out: follow the plan, step by step
+  onSpot(id) {
+    const r = ESCAPE_ROUTES[id];
+    const missing = r.needs.filter((i) => !has(i));
+    if (missing.length) {
+      banner(`${r.icon} ${r.name}: you still need ${itemList(missing)}.`);
+      return;
+    }
+    game.routes.add(id);
+    level.over = true;
+    openDialog([
+      { who: '', text: `${r.icon} <b>${r.name}</b>. This is it! Follow your plan…` },
+      ...escapeStep(id, 0),
+    ], () => showWin(id));
+  },
+
+  finish() {
+    openDialog([{ who: '', text: '🎤 Assembly practice is over. The teachers never found you… but you never got out either.' }],
+      () => endDay(`Day ${game.day} is over`, ['Try the great escape again tomorrow!']));
+  },
+
+  // ---------- drawing ----------
+  drawBackground(L) { LEVELS.break.drawBackground(L); },
+  drawTile(x, y, c, L) { LEVELS.break.drawTile.call(this, x, y, c, L); },
+  drawSeated(x, y, look) { LEVELS.break.drawSeated(x, y, look); },
+
+  drawWatcher(L) {
+    for (const W of L.watchers) {
+      const X = tileX(W.dx), Y = tileY(W.dy);
+      if (X < -TILE || X > 320 || Y < -TILE || Y > 180) continue;
+      const back = W.cone && W.dir && W.dir.y < 0;
+      drawPerson(ctx, X + 2, Y + 1, back ? { ...W.look, back: true } : W.look, false);
+      if (W.sus > 0) drawBubble(ctx, X + 10, Y - 8, '?', '#ffd166');
+      else if (W.state !== 'patrol') drawBubble(ctx, X + 10, Y - 8, 'note', '#80ed99');
+    }
+  },
+
+  drawOver() {                                    // the end of the day: orange evening light
+    ctx.fillStyle = 'rgba(255, 140, 60, 0.12)';
+    ctx.fillRect(0, 0, 320, 180);
+  },
+};
+
+// One step of the great escape: "which thing do you use now?"
+function escapeStep(id, n) {
+  const r = ESCAPE_ROUTES[id], step = r.steps[n];
+  return [{
+    who: '',
+    text: `<b>Step ${n + 1} of ${r.steps.length}.</b> ${step.ask} What do you use?`,
+    pick: {
+      items: () => Object.keys(game.items).filter(has),
+      onPick(item) {
+        if (item !== step.item) {
+          const wrong = WRONG_ITEM_LINES[item] || `You try the ${ITEMS[item].icon} ${ITEMS[item].name.toLowerCase()}… That doesn't help here! Think about your plan.`;
+          return [{ who: '', text: wrong }, ...escapeStep(id, n)];
+        }
+        const pages = [{ who: '', text: `${ITEMS[item].icon} ${step.done}` }];
+        if (n + 1 < r.steps.length) return [...pages, ...escapeStep(id, n + 1)];
+        return [
+          ...pages,
+          { who: '', text: '🚲 You run to the car park. Your bike is waiting!' },
+          { who: '', text: '🔑 You unlock it with your bike key and RIDE AWAY! The wind in your hair. No assembly for YOU!' },
+        ];
+      },
+    },
+  }];
+}
 
 // The ways out found in a level, for the "Find" icons at the top
 function routeGoals(levelId) {

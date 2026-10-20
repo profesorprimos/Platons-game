@@ -16,6 +16,8 @@ Open `index.html` in a web browser. You do not need to install anything.
 
 **Level 4: science.** Professor Fizz walks around the lab and only sees what is in front of her. Find the smoke potion, the batteries and the torch.
 
+**The Great Escape.** When your plan is ready, everybody goes to assembly practice. Three teachers search the playground. Get to your way out, use your things in the right order, and ride away on your bike!
+
 | Key | What it does |
 |-----|--------------|
 | Arrow keys or W A S D | Move |
@@ -24,6 +26,7 @@ Open `index.html` in a web browser. You do not need to install anything.
 | J | Tell a joke (only the Funny One can) |
 | Y / N | Say yes or no to a swap |
 | U | Use the smoke potion |
+| 1 – 9 | Choose a thing from your bag (in the great escape) |
 | B | Open your bag and notebook |
 | H | See the controls again |
 
@@ -32,7 +35,7 @@ Open `index.html` in a web browser. You do not need to install anything.
 | File | What is inside |
 |------|----------------|
 | `js/data.js` | **Start here!** Characters, items, secrets, what the students say, and the maps of the bus, the classroom, the playground and the science lab. You can change the words here. |
-| `js/levels.js` | The rules and drawings for each level (bus, classroom, break time, science). Add new levels here. |
+| `js/levels.js` | The rules and drawings for each level (bus, classroom, break time, science, the great escape). Add new levels here. |
 | `js/sprites.js` | The pixel art for the people |
 | `js/game.js` | The game engine: moving, hiding, talking, getting caught |
 | `style.css` | Colours and layout of the page |

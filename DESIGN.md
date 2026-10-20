@@ -168,20 +168,28 @@ A science lesson with **Professor Fizz**, after break and before home time.
 - A student in the lab swaps a 🚁 helicopter hat for 2 sweets (if you didn't get one on the bus).
 - **Professor Fizz's habits:** Monday her experiment goes BOOM (smoke), Tuesday Gerald the frog escapes, Wednesday steamed-up goggles, Thursday electric hair, Friday a volcano.
 
-## How to win (so far)
+## The Great Escape (final level, built!)
 
-Get the 🔑 **bike key** on the bus, find at least **one way out** at break time, and have **everything that way needs**, within the 10 days. Then your escape plan is ready. (The great escape itself comes later.)
+When the school day ends and your plan is ready (🔑 bike key + everything for one way out), the bell rings: **"Everybody to the hall for ASSEMBLY PRACTICE!"** This is your chance.
 
-### Character powers
+- The playground at the end of the day. Everybody else is inside, so **any student outside is suspicious**.
+- **Three teachers search for you at the same time:**
+  - **Mr Grumble** walks around the sandpit and the main entrance (sees in a small circle)
+  - **Ms Whistle** walks around the playground (sees in a circle)
+  - **Professor Fizz** walks along the garden and the high wall (sees in a cone in front of her)
+- If **any** teacher sees you, you are caught. Hide in the **bushes**.
+- At your way out, **follow your plan**: choose your things **in the right order** (press 1, 2, 3… or click).
+  - 🚪 Main entrance: 🎫 hall pass → 🧪 smoke potion → 🔢 gate code
+  - 🧱 High wall: 🪜 ladder → 🔋 batteries → 🚁 helicopter hat
+  - 🕳️ Hedge hole: 💨 whoopee cushion → 🪣 toy spade → 🔦 torch
+- The wrong thing doesn't help (and sometimes it's funny). Try again!
+- Then you run to the car park, unlock your bike with your 🔑 key, and **ride away. YOU ESCAPED!**
+- If you get caught, you go to assembly practice and lose a thing. Try again the next day.
 
-| Character | Power |
-|-----------|-------|
-| The Sporty One | Walks faster |
-| The Clever One | Sees today's habit on the time bar, without being told |
-| The Funny One | Tells a joke once in each level (press J). Everybody laughs and stops watching for 6 seconds. |
-| The Quiet One | Makes half as much noise |
+## How to win
+
+Collect your plan during the school days, then do **the great escape** before the end of day 10.
 
 ## Still to decide
 
-- The great escape: how you actually leave school and get to your bike
 - The other levels: lunch in the canteen, car park

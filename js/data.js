@@ -381,16 +381,32 @@ const ESCAPE_ROUTES = {
   gate: {
     level: 'break', icon: '🚪', name: 'The main entrance',
     needs: ['hallPass', 'gateCode', 'smokePotion'],
+    // In the great escape, you use your things in this order:
+    steps: [
+      { item: 'hallPass', ask: 'The office lady is watching the gate from her window.', done: 'You show her the hall pass. "Hmm… OK," she says, and looks back at her computer.' },
+      { item: 'smokePotion', ask: 'Oh no! She looks up again!', done: 'POOF! Green smoke everywhere. She can\'t see a thing!' },
+      { item: 'gateCode', ask: 'The gate has a code lock.', done: 'You type 1-2-3-4. BEEP! The gate swings open!' },
+    ],
     text: 'The main entrance gate. It has a code lock, and the office lady watches it. Show a hall pass, type the code, and make some smoke so she can\'t see you leave!',
   },
   wall: {
     level: 'break', icon: '🧱', name: 'Over the high wall',
     needs: ['ladder', 'helicopterHat', 'batteries'],
+    steps: [
+      { item: 'ladder', ask: 'The wall is MUCH too high to climb.', done: 'You put up the ladder and climb to the top. Wow, it is a long way down on the other side!' },
+      { item: 'batteries', ask: 'Your helicopter hat doesn\'t work. The rotor won\'t turn.', done: 'You put the batteries in the hat. Whirrrrr!' },
+      { item: 'helicopterHat', ask: 'Now you need to get down the other side.', done: 'You put on the hat and float down gently, like a leaf. Wheee!' },
+    ],
     text: 'A high wall at the side of the playground. Climb up with a ladder, then fly down the other side with a helicopter hat that really works!',
   },
   hedge: {
     level: 'break', icon: '🕳️', name: 'The hole under the hedge',
     needs: ['toySpade', 'whoopeeCushion', 'torch'],
+    steps: [
+      { item: 'whoopeeCushion', ask: 'Digging is noisy. The teachers will hear you!', done: 'PRRRRRP! All the teachers look the other way, giggling. Nobody can hear you now.' },
+      { item: 'toySpade', ask: 'The hole is much too small for you.', done: 'Dig, dig, dig! The hole is big enough now.' },
+      { item: 'torch', ask: 'The tunnel under the hedge is VERY dark.', done: 'Click! Now you can see. You crawl through the tunnel… and out the other side!' },
+    ],
     text: 'A small hole under the hedge. Dig it bigger with a spade. Digging is noisy, so a whoopee cushion makes everybody look the other way. And the tunnel is VERY dark: you need a torch!',
   },
 };
@@ -649,3 +665,43 @@ const SCIENCE_LINES = [
   'I am doing an experiment. It is called sleeping.',
   'Gerald the frog is my best friend.',
 ];
+
+// ============================================================
+//  THE GREAT ESCAPE (the final level)
+//  When your escape plan is ready, everybody goes to the hall for
+//  assembly practice… and you escape! Teachers are searching outside.
+// ============================================================
+
+const ESCAPE_SECONDS = 120;     // how long assembly practice lasts
+
+// The playground again, but everybody is inside. More bushes to hide in!
+// (Same letters as BREAK_MAP.)
+const ESCAPE_MAP = [
+  '########################D###########',
+  '=::::::...b.........b...P.......XX.=',
+  'G::::::......................b.....=',
+  '=::::::............................=',
+  '=......ppppppppbpppppp.T.kkkkkkkk..=',
+  '=BBBB..ppppppppppppppp...kkkkkkkk..=',
+  '=,,,,..ppppppppppppppp...kbkkkkkk..=',
+  '=,,,,..ppppppppppppppp...kkkkkkkk..=',
+  '=....b.ppppppppppppppp.b.......,,,,=',
+  '=......ppppbpppppppppp.........,,,,=',
+  '=.bqqqq....................b...,,b,=',
+  '=..qqqq...nn............T......,,,Y=',
+  '=..qqqq........................,b,,=',
+  '=............b......b......X...,,,,=',
+  '=gggbgggggggggggbgggggggggggbgggggg=',
+  '=,,,,b,,,,,b,,,,,,,b,,,,,,,b,,,b,,,=',
+  '=,,,,,,,b,,,,,,b,,,,,,,b,,,,,,,,,,,=',
+  '=,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,=',
+  '=hhhhhhhhhhhhhhhhhhhhhOhhhhhhhhhhhh=',
+];
+
+// What happens if you try the wrong thing at your way out
+const WRONG_ITEM_LINES = {
+  sweets: 'You eat a sweet. Yummy! But you are still stuck.',
+  sunglasses: 'You put on your sunglasses. You look VERY cool. But you are still stuck.',
+  quietShoes: 'You tiptoe on the spot. Very quietly. Nothing happens.',
+  magicEquation: 'You read the magic equation out loud. It does not help with this.',
+};

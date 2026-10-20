@@ -32,6 +32,7 @@ function keyName(e) {
     case 'h': case 'H': return 'help';
     case 'u': case 'U': return 'use';
   }
+  if (e.key >= '1' && e.key <= '9') return 'k' + e.key;   // number keys pick an item
   return null;
 }
 
@@ -263,14 +264,26 @@ function showAssembly() {
     <button data-go>Try again ▶</button>`, showSelect);
 }
 
+// The great escape is ready: everybody goes to assembly practice… except you
+function showEscapeIntro() {
+  game.screen = 'escapeintro';
+  const ready = Object.values(ESCAPE_ROUTES).filter((r) => r.needs.every(has));
+  showScreen(`
+    <h2>The Great Escape</h2>
+    <p>🔔 RIIIING! "Everybody to the hall for ASSEMBLY PRACTICE!"</p>
+    <p>You have your 🔑 bike key, and your escape plan is ready. This is your chance!</p>
+    ${ready.map((r) => `<p class="note">${r.icon} <b>${r.name}</b>: ${itemList(r.needs)}</p>`).join('')}
+    <button data-go>Escape! ▶</button>`, () => startLevel('escape'));
+}
+
 function showWin(routeId) {
   game.screen = 'win';
   const r = ESCAPE_ROUTES[routeId];
   showScreen(`
-    <h2>🎉 Your escape plan is ready!</h2>
-    <p>Day ${game.day}. You got caught ${game.caught} time${game.caught === 1 ? '' : 's'}.</p>
-    <p>🔑 You have your bike key.<br>${r.icon} Your way out: <b>${r.name}</b>, with ${itemList(r.needs)}.</p>
-    <p class="note">Next: the GREAT ESCAPE! (Coming soon!)</p>
+    <h2>🎉 YOU ESCAPED! 🚲💨</h2>
+    <p>You escaped from school on day ${game.day}, ${r.icon} <b>${r.name.toLowerCase()}</b>.</p>
+    <p>You got caught ${game.caught} time${game.caught === 1 ? '' : 's'}.</p>
+    <p class="note">No boring end-of-term assembly for you!</p>
     <button data-go>Play again ▶</button>`, showSelect);
 }
 
@@ -292,8 +305,13 @@ function renderDialog() {
     <div class="text">${p.text}</div>
     ${p.choice
       ? `<div class="choices"><button id="yes">Yes (Y)</button><button id="no">No (N)</button></div>`
-      : `<div class="next">E / Enter ▶</div>`}`;
-  box.onclick = p.choice ? null : advanceDialog;
+      : p.pick
+        ? `<div class="choices">${p.pick.items().map((i, n) => `<button data-item="${i}">${n + 1} ${ITEMS[i].icon} ${ITEMS[i].name}</button>`).join('')}</div>`
+        : `<div class="next">E / Enter ▶</div>`}`;
+  box.onclick = p.choice || p.pick ? null : advanceDialog;
+  box.querySelectorAll('[data-item]').forEach((b) => {
+    b.onclick = (e) => { e.stopPropagation(); pick(b.dataset.item); };
+  });
   if (p.choice) {
     $('yes').onclick = (e) => { e.stopPropagation(); choose(true); };
     $('no').onclick = (e) => { e.stopPropagation(); choose(false); };
@@ -301,7 +319,7 @@ function renderDialog() {
 }
 
 function advanceDialog() {
-  if (!dialog || dialog.pages[dialog.i].choice) return;
+  if (!dialog || dialog.pages[dialog.i].choice || dialog.pages[dialog.i].pick) return;
   dialog.i++;
   if (dialog.i >= dialog.pages.length) {
     const done = dialog.onClose;
@@ -322,9 +340,23 @@ function choose(yes) {
   advanceDialog();
 }
 
+// Pick an item from your bag (in the great escape)
+function pick(item) {
+  const p = dialog.pages[dialog.i];
+  const more = p.pick.onPick(item);
+  dialog.pages.splice(dialog.i + 1, 0, ...more);
+  delete p.pick;
+  advanceDialog();
+}
+
 function updateDialog() {
   const p = dialog.pages[dialog.i];
-  if (p.choice) {
+  if (p.pick) {
+    const items = p.pick.items();
+    for (let n = 0; n < items.length && n < 9; n++) {
+      if (took('k' + (n + 1))) { pick(items[n]); return; }
+    }
+  } else if (p.choice) {
     if (took('yes')) choose(true);
     else if (took('no')) choose(false);
   } else if (took('action') || took('enter')) {
@@ -369,6 +401,15 @@ function makeLevel(id) {
       L.tiles[y].push(c);
     });
   });
+  if (def.squad) {
+    // several teachers at once (the great escape)
+    L.watchers = def.squad.map((t) => {
+      const path = routeSteps(t.route);
+      return { ...t, state: 'patrol', path, pathI: 0, x: path[0].x, y: path[0].y, dx: path[0].x, dy: path[0].y, dir: path[0].face || RIGHT, sus: 0, timer: t.step };
+    });
+    L.watcher = L.watchers[0];
+    return L;
+  }
   if (def.mode === 'patrol') L.watcher.path = def.patrolPath();
   setWatcher(L, def.pickIdle());
   L.watcher.timer = def.idleTime();
@@ -400,7 +441,7 @@ function nextLevel() {
   if (next) { showLevelIntro(next); return; }
   // the end of the day: to win you need your bike key and everything for one way out
   const route = readyRoute();
-  if (has('bikeKey') && route) { showWin(route); return; }
+  if (has('bikeKey') && route) { showEscapeIntro(); return; }
   const lines = [];
   if (!has('bikeKey')) lines.push('🔑 You still need your <b>bike key</b> from the bus.');
   if (!game.routes.size) lines.push('🗺️ You still need an <b>escape plan</b>. Find a way out at break time!');
@@ -535,7 +576,7 @@ function afterStep() {
   if (!def.noNoise) L.noise = Math.min(100, L.noise + noise);
 
   const route = def.spots && def.spots[tileAt(P.x, P.y)];
-  if (route) findRoute(route);
+  if (route) (def.onSpot ? def.onSpot(route) : findRoute(route));
 
   const item = def.pickups[tileAt(P.x, P.y)];
   if (item && !has(item)) {
@@ -578,6 +619,7 @@ function setIdle() {
 }
 
 function updateWatcher(dt) {
+  if (level.def.squad) { updateSquad(dt); return; }
   const L = level, W = L.watcher, def = L.def;
   // walk the drawing of the teacher towards where he is
   const step = dt * 8;
@@ -648,21 +690,25 @@ function updateWatcher(dt) {
   }
 }
 
+// Take the next step along a teacher's route
+function walkRoute(W, dt, stepTime) {
+  W.timer -= dt;
+  if (W.timer > 0) return;
+  const from = { x: W.x, y: W.y };
+  W.pathI = (W.pathI + 1) % W.path.length;
+  const step = W.path[W.pathI];
+  W.x = step.x;
+  W.y = step.y;
+  // which way they are looking: where they walk, or where they stop to look
+  if (step.face) W.dir = step.face;
+  else if (step.x !== from.x || step.y !== from.y) W.dir = { x: Math.sign(step.x - from.x), y: Math.sign(step.y - from.y) };
+  W.timer = step.wait || stepTime;
+}
+
 // Ms Whistle walks her route. If she sees you out of bounds for a moment, she catches you.
 function updatePatrol(dt) {
   const L = level, W = L.watcher, def = L.def;
-  W.timer -= dt;
-  if (W.timer <= 0) {
-    const from = { x: W.x, y: W.y };
-    W.pathI = (W.pathI + 1) % W.path.length;
-    const step = W.path[W.pathI];
-    W.x = step.x;
-    W.y = step.y;
-    // which way she is looking: where she walks, or where she stops to look
-    if (step.face) W.dir = step.face;
-    else if (step.x !== from.x || step.y !== from.y) W.dir = { x: Math.sign(step.x - from.x), y: Math.sign(step.y - from.y) };
-    W.timer = step.wait || def.stepTime();
-  }
+  walkRoute(W, dt, def.stepTime());
   // a loud noise makes her turn around to look at you
   if (!def.noNoise && L.noise >= 70) {
     const P = L.player, dx = P.x - W.x, dy = P.y - W.y;
@@ -677,6 +723,36 @@ function updatePatrol(dt) {
   } else {
     W.sus = Math.max(0, W.sus - dt * 0.5);
   }
+}
+
+// The great escape: every teacher walks and looks at the same time
+function updateSquad(dt) {
+  const L = level, def = L.def;
+  let busy = null;
+  if (L.smokeTimer > 0) { L.smokeTimer -= dt; busy = 'smoke'; }
+  else if (L.jokeTimer > 0) { L.jokeTimer -= dt; busy = 'laughing'; }
+  for (const W of L.watchers) {
+    const step = dt * 8;
+    W.dx += Math.max(-step, Math.min(step, W.x - W.dx));
+    W.dy += Math.max(-step, Math.min(step, W.y - W.dy));
+    W.state = busy || 'patrol';
+    if (busy) { W.sus = 0; continue; }
+    walkRoute(W, dt, Math.max(0.25, W.step - game.alert * 0.03));
+    if (!isSafe() && seesTile(W, playerTile())) {
+      W.sus += dt;
+      if (W.sus >= def.spotTime()) { spotted(`${W.name} sees you!`); return; }
+    } else {
+      W.sus = Math.max(0, W.sus - dt * 0.5);
+    }
+  }
+}
+
+// What one teacher in the search party can see: a circle, or a cone in front
+function seesTile(W, p) {
+  const dx = p.x - W.x, dy = p.y - W.y, dist = Math.hypot(dx, dy);
+  if (dist > W.range + game.alert * 0.5) return false;
+  if (!W.cone || dist === 0) return true;
+  return (dx * W.dir.x + dy * W.dir.y) / dist >= 0.6;
 }
 
 // Can the watcher see this tile? Some see all around them (a circle), some only in front (a cone).
@@ -708,7 +784,8 @@ function spotted(reason) {
   const L = level;
   if (has('sunglasses') && !L.sunglassesUsed) {
     L.sunglassesUsed = true;
-    setIdle();
+    if (L.watchers) L.watchers.forEach((W) => { W.sus = 0; });
+    else setIdle();
     banner(L.def.sunglassesText);
     return;
   }
@@ -883,7 +960,8 @@ function caught(reason) {
   ], () => {
     // the school day goes on, but everybody watches you more carefully
     game.note = `😬 You got caught. Everybody is watching you more carefully now. Teacher alert: ${alertDots()}`;
-    nextLevel();
+    if (def.onCaught) def.onCaught();
+    else nextLevel();
   });
 }
 
@@ -939,9 +1017,10 @@ function draw() {
 
   // What a walking teacher can see: a circle (Ms Whistle) or a cone in front (Professor Fizz)
   if (def.mode === 'patrol' && W.state === 'patrol') {
+    const sees = L.watchers ? (p) => L.watchers.some((t) => seesTile(t, p)) : canSee;
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
-        if (!canSee({ x, y }) || !def.walk.includes(L.tiles[y][x])) continue;
+        if (!sees({ x, y }) || !def.walk.includes(L.tiles[y][x])) continue;
         const c = L.tiles[y][x];
         const danger = def.outOfBounds ? def.outOfBounds.includes(c) && !def.hide.includes(c) : !def.hide.includes(c);
         ctx.fillStyle = danger ? 'rgba(230,57,70,0.3)' : 'rgba(255,255,255,0.18)';
