@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bus Clock</string>
+    <string name="widget_description">Counts down to the next bus from your stop</string>
+    <string name="widget_setup">Tap ⚙ to set up your bus stop</string>
+    <string name="widget_no_buses">No buses found right now.\nTap to try again</string>
+    <string name="widget_no_days">No commute days selected</string>
+    <string name="leaves_in">leaves in</string>
+    <string name="settings">Settings</string>
+
+    <string name="label_api_key">Google Maps API key</string>
+    <string name="hint_api_key">Needs the Routes API turned on in Google Cloud.</string>
+    <string name="label_stop">Your bus stop</string>
+    <string name="hint_stop_example">Main St &amp; 5th Ave bus stop, Springfield</string>
+    <string name="hint_stop">The stop name as Google Maps shows it, or its coordinates as \"lat,lng\". You can copy coordinates by long-pressing the stop in Google Maps.</string>
+    <string name="label_destination">Where you are going</string>
+    <string name="hint_destination_example">Central Station, Springfield</string>
+    <string name="hint_destination">So that only buses going your way are shown.</string>
+    <string name="label_lines">Only these bus lines (optional)</string>
+    <string name="label_window">When you commute</string>
+    <string name="from_time">From %1$s</string>
+    <string name="to_time">To %1$s</string>
+    <string name="test">Test now</string>
+    <string name="save">Save</string>
+    <string name="testing">Asking Google Maps…</string>
+    <string name="test_none">Google Maps found no buses from this stop to your destination.</string>
+    <string name="error_window">The end time must be after the start time.</string>
+    <string name="error_missing">Please fill in the API key, bus stop and destination.</string>
+</resources>
