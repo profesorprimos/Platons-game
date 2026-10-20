@@ -14,7 +14,7 @@ Open `index.html` in a web browser. You do not need to install anything.
 
 **Level 3: break time.** Explore the playground and find the 3 secret ways out. Stay out of the striped areas when Ms Whistle is near!
 
-**Level 4: science.** Professor Fizz walks around the lab and only sees what is in front of her. Find the smoke potion, the batteries and the safety goggles.
+**Level 4: science.** Professor Fizz walks around the lab and only sees what is in front of her. Find the smoke potion, the batteries and the torch.
 
 | Key | What it does |
 |-----|--------------|

@@ -53,7 +53,7 @@ const ITEMS = {
   toySpade:      { name: 'Toy spade',      icon: '🪣', from: '🍎 break', text: 'A little plastic spade from the sandpit. For digging the hole under the hedge bigger!' },
   batteries:     { name: 'Batteries',      icon: '🔋', from: '🧪 science', text: 'Put them in the helicopter hat and it REALLY flies!' },
   smokePotion:   { name: 'Smoke potion',   icon: '🧪', from: '🧪 science', text: 'For the main entrance: the office can\'t see you in the smoke. (Or press U to use it now: nobody can see you for a few seconds. Works once.)' },
-  goggles:       { name: 'Safety goggles', icon: '🥽', from: '🧪 science', text: 'For digging under the hedge. Professor Fizz says: safety first, even when escaping!' },
+  torch:         { name: 'Torch',          icon: '🔦', from: '🧪 science', text: 'The tunnel under the hedge is very dark. With a torch you can see where you are going!' },
   cardboardYou:  { name: 'Cardboard you',  icon: '🧍', text: 'A cardboard copy of you. At the end of a level it sits in your place, so you don\'t need to be hiding. Works once.' },
 };
 
@@ -390,8 +390,8 @@ const ESCAPE_ROUTES = {
   },
   hedge: {
     level: 'break', icon: '🕳️', name: 'The hole under the hedge',
-    needs: ['toySpade', 'whoopeeCushion', 'goggles'],
-    text: 'A small hole under the hedge. Dig it bigger with a spade. Digging is noisy, so a whoopee cushion makes everybody look the other way. And dirt flies everywhere: wear goggles!',
+    needs: ['toySpade', 'whoopeeCushion', 'torch'],
+    text: 'A small hole under the hedge. Dig it bigger with a spade. Digging is noisy, so a whoopee cushion makes everybody look the other way. And the tunnel is VERY dark: you need a torch!',
   },
 };
 
@@ -535,7 +535,7 @@ const SCIENCE_TEACHER = 'Professor Fizz';
 // #  wall          .  floor        L  lab bench
 // o  empty stool (you can hide here)    s  student    P  you
 // c  smoke potion (on the chemicals shelf)   b  batteries (in the supply box)
-// y  safety goggles (on the hook)
+// y  torch (on the hook)
 // Capital letters are helpful students (see SCIENCE_STUDENTS).
 // The front of the lab (Professor Fizz's bench) is at the TOP.
 const SCIENCE_MAP = [
@@ -549,7 +549,7 @@ const SCIENCE_MAP = [
 ];
 
 // The 3 things to find in the science lab
-const SCIENCE_GOALS = ['smokePotion', 'batteries', 'goggles'];
+const SCIENCE_GOALS = ['smokePotion', 'batteries', 'torch'];
 
 // Professor Fizz's habits. While a habit happens, she does NOT see anything.
 Object.assign(SECRETS, {

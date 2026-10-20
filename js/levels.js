@@ -656,7 +656,7 @@ LEVELS.lab = {
   mode: 'patrol',       // she walks around all the time
   walk: '.ocby',
   hide: 'o',
-  pickups: { c: 'smokePotion', b: 'batteries', y: 'goggles' },
+  pickups: { c: 'smokePotion', b: 'batteries', y: 'torch' },
   goals: SCIENCE_GOALS,
   status: SCIENCE_STATUS,
   idleStates: ['patrol'],
@@ -693,14 +693,14 @@ LEVELS.lab = {
     return [
       { who: SCIENCE_TEACHER, text: 'Welcome to SCIENCE! Today we are making things go fizz. And maybe BOOM.' },
       { who: '', text: 'Professor Fizz never sits down. She walks around the lab all lesson. But she only sees what is <b>in front of her</b> (the light). Move behind her back!' },
-      { who: '', text: 'Find 3 things for your escape:<br>🧪 the <b>smoke potion</b>, on the chemicals shelf at the front<br>🔋 the <b>batteries</b>, in the supply box at the back<br>🥽 the <b>safety goggles</b>, on the hook at the back' },
+      { who: '', text: 'Find 3 things for your escape:<br>🧪 the <b>smoke potion</b>, on the chemicals shelf at the front<br>🔋 the <b>batteries</b>, in the supply box at the back<br>🔦 the <b>torch</b>, on the hook at the back' },
       { who: '', text: 'Hide on an <b>empty stool</b>. Don\'t make noise: she turns around! Be on a stool when the bell rings!' },
     ];
   },
   pickupText: {
     batteries: '🔋 You got the batteries! Now the helicopter hat can really fly.',
     smokePotion: '🧪 You got the smoke potion! Keep it for the main entrance… or press U to use it now.',
-    goggles: '🥽 You got the safety goggles! Safety first!',
+    torch: '🔦 You got the torch! Now you can see in the dark.',
   },
   sunglassesText: '🕶️ Professor Fizz sees you… but thinks you are a famous scientist!',
   seenText: 'Professor Fizz turns around and sees you!',
@@ -777,17 +777,16 @@ LEVELS.lab = {
         ctx.fillRect(X + 3, Y + 2, 4, 2);
         ctx.fillRect(X + 9, Y + 2, 4, 2);
       }
-    } else if (c === 'y') {                         // hook with the safety goggles
+    } else if (c === 'y') {                         // hook with the torch
       ctx.fillStyle = '#6c757d';
       ctx.fillRect(X + 7, Y, 2, 4);
-      if (!has('goggles')) {
-        ctx.fillStyle = shine() ? '#90e0ef' : '#48cae4';
-        ctx.fillRect(X + 3, Y + 4, 4, 4);
-        ctx.fillRect(X + 9, Y + 4, 4, 4);
-        ctx.fillStyle = '#212529';
-        ctx.fillRect(X + 7, Y + 5, 2, 1);
-        ctx.fillRect(X + 2, Y + 5, 1, 1);
-        ctx.fillRect(X + 13, Y + 5, 1, 1);
+      if (!has('torch')) {
+        ctx.fillStyle = '#e63946';                  // the handle
+        ctx.fillRect(X + 6, Y + 4, 4, 8);
+        ctx.fillStyle = '#adb5bd';                  // the top
+        ctx.fillRect(X + 5, Y + 11, 6, 3);
+        ctx.fillStyle = shine() ? '#fff3b0' : '#ffd166'; // the light
+        ctx.fillRect(X + 6, Y + 14, 4, 2);
       }
     }
   },

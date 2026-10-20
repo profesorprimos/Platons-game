@@ -90,7 +90,7 @@ The school day has **4 stages**. Each stage gives you a different part of your e
 | 🚌 **Bus** | **The getaway** | 🔑 bike key (needed for every escape), 🚁 helicopter hat |
 | 📐 **Maths** | **The tools** | 🎫 hall pass, 🪜 folding ladder, 💨 whoopee cushion |
 | 🍎 **Break** | **The ways out** | find the 3 ways out, 🔢 gate code, 🪣 toy spade |
-| 🧪 **Science** | **Getting away unseen** | 🧪 smoke potion, 🔋 batteries, 🥽 safety goggles |
+| 🧪 **Science** | **Getting away unseen** | 🧪 smoke potion, 🔋 batteries, 🔦 torch |
 
 There are **3 ways out**. Each one needs things from **different stages**:
 
@@ -98,7 +98,7 @@ There are **3 ways out**. Each one needs things from **different stages**:
 |---|---|---|---|---|
 | 🚪 **The main entrance**: show a hall pass, type the code, and make smoke so the office can't see you leave | 🎫 hall pass | 🔢 gate code | 🧪 smoke potion | |
 | 🧱 **Over the high wall**: climb up with a ladder, fly down the other side | 🪜 ladder | | 🔋 batteries | 🚁 helicopter hat |
-| 🕳️ **The hole under the hedge**: dig it bigger, make a rude noise so nobody hears, and wear goggles | 💨 whoopee cushion | 🪣 toy spade | 🥽 safety goggles | |
+| 🕳️ **The hole under the hedge**: dig it bigger, make a rude noise so nobody hears, and light up the dark tunnel | 💨 whoopee cushion | 🪣 toy spade | 🔦 torch | |
 
 Every escape also needs your 🔑 **bike key** from the bus.
 
@@ -163,7 +163,7 @@ A science lesson with **Professor Fizz**, after break and before home time.
 - She **stops** at her bench (back to the class) and at the back of the lab (looking along it).
 - If you make a **loud noise**, she **turns around** to look at you.
 - **Hiding:** on any **empty stool**. Be on a stool when the bell rings.
-- **Find 3 things:** 🧪 the **smoke potion** (chemicals shelf at the front), 🔋 the **batteries** (supply box at the back) and 🥽 the **safety goggles** (hook at the back).
+- **Find 3 things:** 🧪 the **smoke potion** (chemicals shelf at the front), 🔋 the **batteries** (supply box at the back) and 🔦 the **torch** (hook at the back).
 - 🧪 **Smoke potion:** you need it for the main entrance. You can also press **U** to use it now (nobody can see you for 6 seconds), but then it is gone until you find another one.
 - A student in the lab swaps a 🚁 helicopter hat for 2 sweets (if you didn't get one on the bus).
 - **Professor Fizz's habits:** Monday her experiment goes BOOM (smoke), Tuesday Gerald the frog escapes, Wednesday steamed-up goggles, Thursday electric hair, Friday a volcano.
